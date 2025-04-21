@@ -3,13 +3,18 @@ import React, { useEffect, useState } from 'react'
 import { useSlideStore } from '@/store/useSlideStore'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
+import { DraggableSlidePreview } from './editor-sidebar/left-sidebar/draggable-slide-preview'
 
 type Props = {}
 
 function LayoutPreview({ }: Props) {
   const [loading, setLoading] = useState(true)
-  const { currentTheme, getOrderedSlides, reorderSlides } = useSlideStore()
+  const { getOrderedSlides, reorderSlides } = useSlideStore()
   const slides = getOrderedSlides()
+
+  const moveSlide = (dragIndex: number, hoverIndex: number) => {
+    reorderSlides(dragIndex, hoverIndex);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -18,7 +23,7 @@ function LayoutPreview({ }: Props) {
   }, [])
 
   return (
-    <div className='w-64 h-full fixed left-0 top-20 border-r overflow-y-auto'>
+    <div className='w-72 h-full fixed left-0 top-20 border-r overflow-y-auto'>
       <ScrollArea className='h-full w-full'>
         {loading ? (
           <div className='pt-8 w-full flex flex-col space-y-8'>
@@ -27,7 +32,7 @@ function LayoutPreview({ }: Props) {
             <Skeleton className='w-full h-20' />
           </div>
         ) : (
-          <div className='p-4 pb-32 space-y-6'>
+          <div className='p-2 pb-32 space-y-6'>
             <div className='flex items-center justify-between mb-6'>
               <h2 className='text-sm font-medium dark:text-gray-100 text-gray-500'>
                 SLIDES
@@ -39,17 +44,16 @@ function LayoutPreview({ }: Props) {
               </span>
             </div>
 
-            {/* TODO: WIP - add slide preview after you build editor */}
-            {/* {slides.map((slide, index) => {
+            {slides.map((slide, index) => {
               return (
                 <DraggableSlidePreview
-                  key={slide.id}
+                  key={slide.id || index}
                   slide={slide}
                   index={index}
                   moveSlide={moveSlide}
                 />
               )
-            })} */}
+            })}
           </div>
         )}
       </ScrollArea>

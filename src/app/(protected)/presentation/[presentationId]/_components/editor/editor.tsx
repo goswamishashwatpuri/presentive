@@ -234,6 +234,7 @@ export function DraggableSlide({
         slide.className,
         isDragging ? 'opacity-50' : 'opacity-100'
       )}
+      data-slide-index={index} //for scrolling into view
       style={{
         backgroundImage: currentTheme.gradientBackground
       }}
