@@ -1,0 +1,35 @@
+{
+  "hidefiles.configurationType": "local",
+  "hidefiles.globalConfig": {
+    "profiles": [
+      {
+        "name": "Default",
+        "detail": "",
+        "description": "Test",
+        "hidden": [
+          ".vscode/",
+          "node_modules/",
+          ".clerk/",
+          "next-env.d.ts",
+          "package-lock.json",
+          "postcss.config.mjs",
+          "README.md",
+          ".eslintrc.json",
+          "tsconfig.json",
+          "next.config.ts",
+          ".gitignore",
+          "tailwind.config.ts",
+          "components.json"
+        ]
+      },
+      {
+        "name": "Strict",
+        "detail": "Hide everything not immediately required",
+        "hidden": [
+          "$Default"
+        ]
+      }
+    ]
+  },
+  "hidefiles.selectedProfile": "Default"
+}
