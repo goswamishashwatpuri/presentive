@@ -10,9 +10,10 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import Navbar from './_components/navbar'
-import LayoutPreview from './_components/layout-preview'
+import Navbar from './_components/navbar/navbar'
+import LayoutPreview from './_components/editor-sidebar/left-sidebar/layout-preview'
 import Editor from './_components/editor/editor'
+import EditorSidebar from './_components/editor-sidebar/right-sidebar/index'
 
 type Props = {}
 
@@ -66,7 +67,7 @@ function Page(props: Props) {
           className='flex-1 flex overflow-hidden pt-16'
           style={{
             color: currentTheme.accentColor,
-            fontFamily: currentTheme.fontColor,
+            fontFamily: currentTheme.fontFamily,
             backgroundColor: currentTheme.backgroundColor,
           }}
         >
@@ -74,6 +75,7 @@ function Page(props: Props) {
           <div className='flex-1 ml-64 pr-16'>
             <Editor isEditable={true} />
           </div>
+          <EditorSidebar />
         </div>
       </div>
     </DndProvider>

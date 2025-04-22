@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useSlideStore } from '@/store/useSlideStore'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
-import { DraggableSlidePreview } from './editor-sidebar/left-sidebar/draggable-slide-preview'
+import { DraggableSlidePreview } from './draggable-slide-preview'
 
 type Props = {}
 

@@ -60,7 +60,7 @@ function Navbar({ presentationId }: Props) {
         passHref
       >
         {/* {projectDetails?.title} */}
-         Presentation Editor
+        Presentation Editor
       </Link>
 
       <div className='flex items-center gap-4'>
@@ -84,8 +84,7 @@ function Navbar({ presentationId }: Props) {
           <span className='hidden sm:inline'>Present</span>
         </Button>
       </div>
-      {/* TODO: add presentation Mode */}
-      {/* {isPresentationMode && <PresentationMode />} */}
+      {isPresentationMode && <PresentationMode onClose={() => setIsPresentationMode(false)} />}
     </nav>
   )
 }

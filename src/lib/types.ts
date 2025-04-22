@@ -21,7 +21,7 @@ export interface ContentItem {
   alt?: string,
   callOutType?: 'success' | 'warning' | 'info' | 'question' | 'caution'
   link?: string,
-  code: string,
+  code?: string,
   language?: string,
   bgColor?: string,
   isTransparent?: boolean
@@ -69,6 +69,7 @@ export interface Theme {
   navbarColor?: string,
   type: 'light' | 'dark'
 }
+
 export interface OutlineCard {
   id: string
   title: string
@@ -80,4 +81,30 @@ export interface LayoutSlides {
   content: ContentItem
   className?: string
   type: string
+}
+
+export interface LayoutGroup {
+  name: string;
+  layouts: Layout[];
+}
+
+export interface Layout {
+  name: string;
+  icon: React.FC;
+  type: string;
+  component: LayoutSlides;
+  layoutType: string;
+}
+
+export interface ComponentGroup {
+  name: string;
+  components: Component[];
+}
+
+interface Component {
+  name: string;
+  icon: string;
+  type: string;
+  component: ContentItem;
+  componentType: string;
 }

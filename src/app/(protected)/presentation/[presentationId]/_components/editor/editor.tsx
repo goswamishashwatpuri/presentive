@@ -4,13 +4,14 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { LayoutSlides, Slide } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { useSlideStore } from '@/store/useSlideStore'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { v4 as uuidv4 } from 'uuid'
 import { MasterRecursiveComponent } from './master-recursive-component'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { EllipsisVertical, Trash } from 'lucide-react'
+import { updateSlides } from '@/actions/project'
 
 type Props = {
   isEditable: boolean
@@ -74,20 +75,40 @@ function Editor({ isEditable }: Props) {
   }, [currentSlide])
 
   useEffect(() => {
-    if (slideRefs.current[currentSlide]) {
-      slideRefs.current[currentSlide]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
-      })
-    }
-  }, [currentSlide])
-
-  useEffect(() => {
     if (typeof window !== 'undefined') {
       setLoading(false)
     }
-
   }, [])
+
+  // Autosave feature
+  const autosaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const saveSlides = useCallback(() => {
+    if (isEditable && project) {
+      (async () => {
+        await updateSlides(project.id, JSON.parse(JSON.stringify(slides)));
+        // console.log("🟢 Slides saved successfully", res);
+      })();
+    }
+  }, [isEditable, project, slides]);
+
+  useEffect(() => {
+    if (autosaveTimeoutRef.current) {
+      clearTimeout(autosaveTimeoutRef.current);
+    }
+
+    if (isEditable) {
+      autosaveTimeoutRef.current = setTimeout(() => {
+        saveSlides();
+      }, 2000); // 5 seconds debounce
+    }
+
+    return () => {
+      if (autosaveTimeoutRef.current) {
+        clearTimeout(autosaveTimeoutRef.current);
+      }
+    };
+  }, [slides, saveSlides, isEditable]);
 
 
   return (
@@ -119,6 +140,12 @@ function Editor({ isEditable }: Props) {
                   handleDelete={handleDelete}
                   isEditable={isEditable}
                 />
+                {isEditable &&
+                  <DropZone
+                    index={index + 1}
+                    onDrop={handleDrop}
+                    isEditable={isEditable}
+                  />}
               </React.Fragment>
             ))}
           </div>
@@ -170,6 +197,7 @@ function DropZone({
 
   return (
     <div
+      ref={dropRef as unknown as React.RefObject<HTMLDivElement>}
       className={cn(
         'h-4 my-2 rounded-md transition-all duration-200',
         isOver && canDrop ? 'border-green-500 bg-green-100' : 'border-gray-300',
@@ -213,6 +241,27 @@ export function DraggableSlide({
     }),
     canDrag: isEditable,
   })
+
+  const [, drop] = useDrop({
+    accept: ["SLIDE", "LAYOUT"],
+    hover(item: { index: number; type: string }) {
+      if (!ref.current || !isEditable) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+
+      if (item.type === "SLIDE") {
+        if (dragIndex === hoverIndex) {
+          return;
+        }
+        moveSlide(dragIndex, hoverIndex);
+        item.index = hoverIndex;
+      }
+    },
+  });
+
+  drag(drop(ref))
 
   function handleContentChange(
     contentId: string,
