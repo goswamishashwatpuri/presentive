@@ -1,3 +1,4 @@
+import { MasterRecursiveComponent } from '@/app/(protected)/presentation/[presentationId]/_components/editor/master-recursive-component'
 import { themes } from '@/lib/constants'
 import { Slide, Theme } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -27,7 +28,13 @@ function ThumbnailPreview({ slide, themeName }: Props) {
     >
       {slide ?
         <div className='scale-[0.5] origin-top-left w-[200%] h-[200%] overflow-hidden'>
-          This is a preview of the slide
+          <MasterRecursiveComponent
+            content={slide.content}
+            onContentChange={() => {}}
+            isPreview={true}
+            isEditable={false}
+            slideId={slide.id}
+          />
         </div>
         :
         <div className='w-full h-full bg-gray-400 flex justify-center items-center'>

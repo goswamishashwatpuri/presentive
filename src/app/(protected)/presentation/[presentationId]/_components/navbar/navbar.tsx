@@ -7,6 +7,7 @@ import { Home, Play, Share2 } from 'lucide-react'
 import { getProjectById } from '@/actions/project'
 import { Project } from '@prisma/client'
 import { toast } from 'sonner'
+import PresentationMode from './presentation-mode'
 
 type Props = {
   presentationId: string

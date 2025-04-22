@@ -23,8 +23,8 @@ function Projects({ allProjects }: Props) {
           key={project?.id}
           projectId={project?.id}
           title={project?.title}
-          isDeleted={project?.isDeleted}
-          createdAt={project?.createdAt}
+          isDelete={project?.isDeleted}
+          createdAt={project?.createdAt as unknown as string}
           slideData={project?.slides}
           themeName={project?.themeName}
         />
