@@ -5,7 +5,8 @@ import { SignedIn, UserButton, useUser } from '@clerk/nextjs'
 import { User } from '@prisma/client'
 import { Button } from '@/components/ui/button'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
-
+import { buySubscription } from '@/actions/lemonSqueezey'
+import { toast } from 'sonner'
 
 type Props = {
   prismaUser: User
@@ -22,8 +23,23 @@ function NavFooter({ prismaUser }: Props) {
   }
 
   const handleUpgrading = async () => {
-    setLoading(true)
-  }
+    setLoading(true);
+    try {
+      const res = await buySubscription(prismaUser.id);
+
+      if (res.status !== 200) {
+        throw new Error("Failed to upgrade subscription");
+      }
+      router.push(res.url);
+    } catch (e) {
+      console.error(e);
+      toast.error("Error", {
+        description: "Something went wrong. Please try again later.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SidebarMenu>
