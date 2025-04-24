@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ContentItem } from '@/lib/types'
 import { motion } from 'framer-motion'
 import { Heading1, Heading2, Heading3, Heading4, Title } from '@/components/global/editor/headings'
@@ -15,6 +15,7 @@ import { CalloutBox } from '@/components/global/editor/callout-box'
 import { Divider } from '@/components/global/editor/divider'
 import { TableOfContents } from '@/components/global/editor/table-of-contents'
 import { CodeBlock } from '@/components/global/editor/code-block'
+
 type Props = {
   content: ContentItem
   onContentChange: (
@@ -39,11 +40,11 @@ const ContentRenderer = React.memo(({
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       onContentChange(content.id, e.target.value)
-    }, [content.id, onContentChange])
+    }, [content?.id, onContentChange])
 
   const commonProps = {
-    placeholder: content.placeholder,
-    value: content.content as string,
+    placeholder: content?.placeholder ?? "",
+    value: content?.content as string ?? "",
     onChange: handleChange,
     isPreview,
   }
@@ -54,7 +55,7 @@ const ContentRenderer = React.memo(({
     transition: { duration: 0.5 }
   }
   // work in progress
-  switch (content.type) {
+  switch (content?.type ?? "") {
     case 'heading1':
       return (
         <motion.div className='w-full h-full'
@@ -295,8 +296,6 @@ const ContentRenderer = React.memo(({
 })
 ContentRenderer.displayName = 'ContentRenderer'
 
-
-
 export const MasterRecursiveComponent = React.memo(({
   content,
   onContentChange,
@@ -305,7 +304,6 @@ export const MasterRecursiveComponent = React.memo(({
   isEditable = true,
   isPreview = false
 }: Props) => {
-
   if (isPreview) {
     return (
       <ContentRenderer

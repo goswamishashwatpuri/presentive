@@ -1,25 +1,26 @@
 'use client'
+// import { generateImageWithGeimini } from '@/actions/aiModel'
+import { generateImageWithGeimini } from '@/actions/imageGenModel'
+import { uploadFile } from '@uploadcare/upload-client'
 import React, { useState } from 'react'
-import { generateImagesTemp } from '@/actions/aiModel'
 type Props = {}
 
-function page({}: Props) {
+function page({ }: Props) {
   const [image, setImage] = useState<string | null>(null)
+  // const [fileName, setFileName] = useState<string | null>(null)
+
   return (
     <div>
-      <button onClick={() => {
-        generateImagesTemp().then((res) => {
-          // setImage(res)
-          if (res) {
-            const blob = new Blob([res.buffer], { type: 'image/png' });
-            setImage(URL.createObjectURL(blob))
-          }
-        })
+      <button onClick={async () => {
+        const imageUrl = await generateImageWithGeimini("A beautiful sunset over a calm ocean")
+
+        setImage(imageUrl)
       }}>
         Generate Images
       </button>
-      {image && <img src={image} alt="image" />}
-      
+      {/* {image && <img src={"https://ucarecdn.com/3c7fba82-ae7c-4825-aaef-4e3f42034a98/"} className='w-1/2 h-1/2' alt="image" />} */}
+      <img src={"https://ucarecdn.com/3c7fba82-ae7c-4825-aaef-4e3f42034a98/-/preview/"} className='w alt="image"' />
+
     </div>
   )
 }

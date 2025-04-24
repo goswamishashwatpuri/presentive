@@ -53,8 +53,9 @@ function ThemePicker({ selectedTheme, themes, onThemeSelect }: Props) {
       })
       setSlides(res.data)
 
+      console.log("🟢 Fetching images...");
+      await fetchImages(res.data)
       router.push(`/presentation/${project?.id}`)
-      fetchImages(res.data)
 
     } catch (error) {
       toast.error("Error", {
@@ -66,34 +67,40 @@ function ThemePicker({ selectedTheme, themes, onThemeSelect }: Props) {
   }
 
   const fetchImages = async (slides:Slide[]) => {
-   
     try {
       console.log("🟢 Fetching images...");
-  
+
       const updatedSlides = await generateImages(slides);
       if (updatedSlides.status !== 200 || !updatedSlides.data) {
         throw new Error("Failed to generate images");
       }
-  
+
       console.log("🟢 Images generated successfully, updating slides...", updatedSlides);
-      setSlides(updatedSlides.data);
-  
-      // Save updated slides in the database
+      
+      // First update the database
       const updateSlide = await updateSlides(
         params.presentationId as string,
         JSON.stringify(updatedSlides.data)
       );
-  
-      if (updateSlide.status === 200 && updateSlide.data) {
-        setProject(updateSlide.data);
+
+      if (updateSlide.status !== 200 || !updateSlide.data) {
+        throw new Error("Failed to update slides in database");
       }
+
+      // Then update the store
+      setProject(updateSlide.data);
+      setSlides(updatedSlides.data);
+
+      // Wait a small amount of time to ensure state is synchronized
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Finally navigate
+      router.push(`/presentation/${project?.id}`);
     } catch (error) {
       console.error("🔴 Error generating images:", error);
       toast.error("Error", {
         description: "Failed to generate images",
       });
-    } finally {
-      // setImageLoading(false);
     }
   };
 

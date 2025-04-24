@@ -1,8 +1,7 @@
-'use server'
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleGenAI } from '@google/genai';
 import mime from 'mime';
+import { createRandomString } from "@/lib/utils";
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey!);
@@ -47,9 +46,9 @@ export const layoutGenerationSession = layoutGenerationModel.startChat({
 
 
 // image generation model config
-export async function generateImagesTemp(prompt: string) {
+export async function generateImageWithGeimini(prompt: string) {
   const ai = new GoogleGenAI({
-    apiKey: apiKey,
+    apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
   });
   const config = {
     responseModalities: [
@@ -72,9 +71,9 @@ export async function generateImagesTemp(prompt: string) {
   }
 
   let buffer = Buffer.from(inlineData.data, 'base64');
-  let fileExtension = mime.getExtension(inlineData.mimeType);
+  let fileName = createRandomString(10) + '.' + mime.getExtension(inlineData.mimeType);
   return {
     buffer,
-    fileExtension,
+    fileName,
   };
 }

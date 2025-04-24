@@ -1,10 +1,12 @@
 'use server'
 
 import { currentUser } from "@clerk/nextjs/server"
-import { layoutGenerationSession, outlineGenerationSession } from "./aiModel"
+import { generateImageWithGeimini, layoutGenerationSession, outlineGenerationSession } from "./aiModel"
 import { client } from "@/lib/prisma"
 import { v4 as uuidv4 } from 'uuid';
-import { ContentType, Slide } from "@/lib/types";
+import { ContentType, Slide, ContentItem } from "@/lib/types";
+import { uploadFile } from "@uploadcare/upload-client";
+import { generateImageWithGeiminiTest } from "./imageGenModel";
 
 export const generateCreativePrompt = async (prompt: string) => {
   const finalPrompt = `
@@ -18,13 +20,6 @@ export const generateCreativePrompt = async (prompt: string) => {
       "Point 1",
       "Point 2",
       "Point 3",
-      "Point 4",
-      "Point 5",
-      "Point 6",
-      "Point 7",
-      "Point 8",
-      "Point 9",
-      "Point 10",
     ]
   }
 
@@ -1105,7 +1100,6 @@ export const generateLayouts = async (theme: string, projectId: string) => {
 
 
 //image generation functions
-
 export const generateImages = async (slides: Slide[]) => {
   try {
     console.log("🟢 Generating images for slides...");
@@ -1136,13 +1130,17 @@ const processSlideContent = async (content: ContentItem): Promise<ContentItem> =
 
   // Process images in parallel while maintaining structure
   await Promise.all(
-    imageComponents.map(async (component) => {
+    imageComponents.map(async (component, index) => {
+      // limiting to only 3 images per project - gemini p
+      if (index > 1) {
+        component.content = "https://plus.unsplash.com/premium_vector-1721386085379-8df3c43a062d";
+      }
       try {
         const newUrl = await generateImageUrl(component.alt || "Placeholder Image");
         component.content = newUrl;
       } catch (error) {
         console.error("🔴 Image generation failed:", error);
-        component.content = "https://via.placeholder.com/1024";
+        component.content = "https://plus.unsplash.com/premium_vector-1721386085379-8df3c43a062d";
       }
     })
   );
@@ -1157,7 +1155,7 @@ const findImageComponents = (layout: ContentItem): ContentItem[] => {
     if (node.type === "image") {
       images.push(node);
     }
-    
+
     if (Array.isArray(node.content)) {
       node.content.forEach(child => traverse(child as ContentItem));
     } else if (typeof node.content === "object" && node.content !== null) {
@@ -1171,48 +1169,61 @@ const findImageComponents = (layout: ContentItem): ContentItem[] => {
 
 const generateImageUrl = async (prompt: string): Promise<string> => {
   try {
-    const improvedPrompt = `
-    Create a highly realistic, professional image based on the following description. The image should look as if captured in real life, with attention to detail, lighting, and texture. 
+  const improvedPrompt = `
+  Create a highly realistic, professional image based on the following description. The image should look as if captured in real life, with attention to detail, lighting, and texture. 
 
-    Description: ${prompt}
-
-    Important Notes:
-    - The image must be in a photorealistic style and visually compelling.
-    - Ensure all text, signs, or visible writing in the image are in English.
-    - Pay special attention to lighting, shadows, and textures to make the image as lifelike as possible.
-    - Avoid elements that appear abstract, cartoonish, or overly artistic. The image should be suitable for professional presentations.
-    - Focus on accurately depicting the concept described, including specific objects, environment, mood, and context. Maintain relevance to the description provided.
-
-    Example Use Cases: Business presentations, educational slides, professional designs.
+  Description: ${prompt}
+  
+  Important Notes:
+  - The image must be in a photorealistic style and visually compelling.
+  - Ensure all text, signs, or visible writing in the image are in English.
+  - Pay special attention to lighting, shadows, and textures to make the image as lifelike as possible.
+  - Avoid elements that appear abstract, cartoonish, or overly artistic. The image should be suitable for professional presentations.
+  - Focus on accurately depicting the concept described, including specific objects, environment, mood, and context. Maintain relevance to the description provided.
+  
+  Example Use Cases: Business presentations, educational slides, professional designs.
   `;
-    const dalleResponse = await openai.images.generate({
-      prompt: improvedPrompt,
-      n: 1,
-      size: "1024x1024",
-    });
-    console.log("🟢 Image generated successfully:", dalleResponse.data[0]?.url);
-    const imageUrl = dalleResponse.data[0]?.url;
-    if (!imageUrl) {
-      console.error("Failed to generate image");
-      return "https://via.placeholder.com/1024";
-    }
-    // Download the image from DALL·E
-    const imageResponse = await axios.get(imageUrl, {
-      responseType: "arraybuffer",
-    });
-    const imageBuffer = Buffer.from(imageResponse.data);
-    const result = await uploadDirect(imageBuffer, {
-      publicKey: process.env.UPLOADCARE_PUBLIC_KEY!,
-      store: "auto",
-    });
+  const cdnUrl = await generateImageWithGeiminiTest(improvedPrompt)
+    return `${cdnUrl}-/preview/`
 
-    console.log("🟢 Image uploaded to Uploadcare:", result?.uuid);
-
-    return result?.uuid
-      ? `https://ucarecdn.com/${result.uuid}/-/preview/`
-      : "https://via.placeholder.com/1024";
-  } catch (error) {
-    console.error("Failed to generate image:", error);
-    return "https://via.placeholder.com/1024";
+  } catch (error: any) {
+    console.error("Failed to generate image:", error.message);
+    return "https://plus.unsplash.com/premium_vector-1721386085379-8df3c43a062d";
   }
 };
+
+// const generateImageUrl = async (prompt: string): Promise<string> => {
+//   try {
+//   const improvedPrompt = `
+//   Create a highly realistic, professional image based on the following description. The image should look as if captured in real life, with attention to detail, lighting, and texture. 
+
+//   Description: ${prompt}
+  
+//   Important Notes:
+//   - The image must be in a photorealistic style and visually compelling.
+//   - Ensure all text, signs, or visible writing in the image are in English.
+//   - Pay special attention to lighting, shadows, and textures to make the image as lifelike as possible.
+//   - Avoid elements that appear abstract, cartoonish, or overly artistic. The image should be suitable for professional presentations.
+//   - Focus on accurately depicting the concept described, including specific objects, environment, mood, and context. Maintain relevance to the description provided.
+  
+//   Example Use Cases: Business presentations, educational slides, professional designs.
+//   `;
+//   const { buffer, fileName } = await generateImageWithGeimini(improvedPrompt)
+//   const imageBlob = new Blob([buffer], { type: 'image/png' });
+
+//   console.log("🟢 Image generated successfully:");
+
+//     const file = await uploadFile(imageBlob, {
+//       publicKey: process.env.UPLOADCARE_PUBLIC_KEY!,
+//       fileName: fileName,
+//     });
+//     // console.log(file);
+
+//     console.log("🟢 Image uploaded to Uploadcare");
+//     return file?.cdnUrl
+
+//   } catch (error: any) {
+//     console.error("Failed to generate image:", error.message);
+//     return "https://plus.unsplash.com/premium_vector-1721386085379-8df3c43a062d";
+//   }
+// };

@@ -42,7 +42,7 @@ export const AccentLeft = {
             type: "image" as ContentType,
             name: "Image",
             content:
-              "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
             alt: "Title",
           },
           {
@@ -118,7 +118,7 @@ export const AccentRight = {
             name: "Image",
             restrictToDrop: true,
             content:
-              "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
             alt: "Title",
           },
         ],
@@ -153,7 +153,7 @@ export const ImageAndText = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
             ],
@@ -236,7 +236,7 @@ export const TextAndImage = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
             ],
@@ -592,7 +592,7 @@ export const TwoImageColumns = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
               {
@@ -622,7 +622,7 @@ export const TwoImageColumns = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
               {
@@ -683,7 +683,7 @@ export const ThreeImageColumns = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
               {
@@ -713,7 +713,7 @@ export const ThreeImageColumns = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
               {
@@ -744,7 +744,7 @@ export const ThreeImageColumns = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
               {
@@ -802,7 +802,7 @@ export const FourImageColumns = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
               {
@@ -832,7 +832,7 @@ export const FourImageColumns = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
               {
@@ -863,7 +863,7 @@ export const FourImageColumns = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
               {
@@ -895,7 +895,7 @@ export const FourImageColumns = {
                 name: "Image",
                 className: "p-3",
                 content:
-                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701?q=80&w=2767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://plus.unsplash.com/premium_photo-1729004379397-ece899804701",
                 alt: "Title",
               },
               {
