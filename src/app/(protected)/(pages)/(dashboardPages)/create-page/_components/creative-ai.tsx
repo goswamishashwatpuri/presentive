@@ -170,33 +170,6 @@ function CreativeAi({ onBack }: Props) {
             onChange={(e) => setCurrentAiPrompt(e.target.value)}
           />
           <div className='flex items-center gap-3'>
-            {/* <Select
-              value={numberOfCards.toString()}
-              onValueChange={(value) => setNumberOfCards(Number(value))}
-            >
-              <SelectTrigger className='w-fit gap-2 font-semibold shadow-xl'>
-                <SelectValue placeholder='Select number of cards' />
-              </SelectTrigger>
-              <SelectContent className='w-fit'>
-                {outlines.length === 0 ? (
-                  <SelectItem value='0' className='font-semibold'>No cards!</SelectItem>
-                ) : (
-                  Array.from(
-                    { length: outlines.length },
-                    (_, i) => i + 1
-                  ).map((num) => {
-                    return (
-                      <SelectItem key={num}
-                        className='font-semibold'
-                        value={num.toString()}>
-                        {num} {num > 1 ? 'cards' : 'card'}
-                      </SelectItem>
-                    )
-                  })
-                )}
-              </SelectContent>
-            </Select> */}
-
             <Button
               variant='destructive'
               aria-label='Reset Cards'

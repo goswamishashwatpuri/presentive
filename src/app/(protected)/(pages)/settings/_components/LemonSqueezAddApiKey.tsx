@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, Plus } from "lucide-react";
 import { addLemonSqueezyApiKey } from "@/actions/user";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import LemonKeyInput from "./LemonKeyInput";
 import StoreIdInput from "./StoreIdInput";
@@ -31,6 +31,7 @@ const LemonSqueezAddApiKey = ({
 }: Props) => {
   console.log("🍋", !storeId);
   const router = useRouter();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [newApiKey, setNewApiKey] = useState("");
   const [newStoreId, setNewStoreId] = useState("");
@@ -46,8 +47,10 @@ const LemonSqueezAddApiKey = ({
         throw new Error("Unable to add API Key");
       }
 
-      toast.success("Success", {
+      toast({
+        title: "Success",
         description: "API Key added successfully",
+        variant: "default",
       });
       setNewApiKey("");
       setNewStoreId("");
@@ -55,8 +58,10 @@ const LemonSqueezAddApiKey = ({
       router.refresh();
     } catch (error) {
       console.error("🔴 ERROR", error);
-      toast.error("Error", {
+      toast({
+        title: "Error",
         description: "Unable to add API Key",
+        variant: "destructive",
       });
     } finally {
       setOpen(false);

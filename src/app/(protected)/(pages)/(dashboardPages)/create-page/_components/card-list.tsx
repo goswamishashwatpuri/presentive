@@ -200,7 +200,6 @@ function CardList({
                 dragOverStyles={getDragOverStyles(index)}
               />
               <AddCardButton
-                // Todo: complete this
                 onAddCard={() => onAddCard(index)}
               />
             </React.Fragment>

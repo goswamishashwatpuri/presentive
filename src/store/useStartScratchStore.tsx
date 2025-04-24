@@ -16,7 +16,7 @@ export const useScratchStore = create<OutlineStore>()(
         outlines: [],
         resetOutlines: () => set({ outlines: [] }),
         addOutline: (outline) => set((state) => ({ outlines: [...state.outlines, outline] })),
-        addMultipleOutlines: (outlines) => set((state) => ({ outlines: [...state.outlines, ...outlines] })),
+        addMultipleOutlines: (outlines) => set(() => ({ outlines })),
       }),
       { name: 'scratch' }
     )

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from 'lucide-react';
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import { updateLemonSqueezyApiKey } from "@/actions/user";
 
 const LemonKeyInput = ({lemonSqueezyApiKey}:{
@@ -11,6 +11,7 @@ const LemonKeyInput = ({lemonSqueezyApiKey}:{
 }) => {
   const [apiKey, setApiKey] = useState("");
   const [edit, setEdit] = useState(false);
+  const {toast} = useToast();
   const [loading, setLoading] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
 
@@ -29,15 +30,19 @@ const LemonKeyInput = ({lemonSqueezyApiKey}:{
           throw new Error("Unable to save API Key");
         }
 
-        toast.success("Success", {
+        toast({
+          title: "Success",
           description: "API Key saved successfully",
+          variant: "default",
         });
 
         setApiKey(res.user?.lemonSqueezyApiKey || "");
       }catch(error){
         console.error("🔴 ERROR", error);
-        toast.error("Error", {
+        toast({
+          title: "Error",
           description: "Unable to save API Key",
+          variant: "destructive",
         });
       }
       finally{

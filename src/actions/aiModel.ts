@@ -43,37 +43,3 @@ export const layoutGenerationSession = layoutGenerationModel.startChat({
   history: [
   ],
 });
-
-
-// image generation model config
-export async function generateImageWithGeimini(prompt: string) {
-  const ai = new GoogleGenAI({
-    apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
-  });
-  const config = {
-    responseModalities: [
-      'image',
-      'text'
-    ],
-    responseMimeType: 'text/plain',
-  };
-  const model = 'gemini-2.0-flash-exp-image-generation';
-  const contents = [{ role: 'user', parts: [{ text: prompt }] }];
-
-  const response = await ai.models.generateContent({
-    model,
-    config,
-    contents,
-  });
-  const inlineData = response?.candidates?.[0]?.content?.parts?.[0]?.inlineData;
-  if (!inlineData || !inlineData.data || !inlineData.mimeType) {
-    throw new Error("Invalid response structure");
-  }
-
-  let buffer = Buffer.from(inlineData.data, 'base64');
-  let fileName = createRandomString(10) + '.' + mime.getExtension(inlineData.mimeType);
-  return {
-    buffer,
-    fileName,
-  };
-}

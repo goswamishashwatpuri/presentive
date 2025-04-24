@@ -3,20 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from 'lucide-react';
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { updateWebhookSecret } from "@/actions/user";
+import { updateStoreId } from "@/actions/user";
+import { useToast } from "@/hooks/use-toast";
 
-const LemonSqueezyWebhook = ({webhookSecret}:{
-  webhookSecret: string;
-}) => {
-  const [webhookSecretKey, setWebhookSecretKey] = useState("");
+const StoreIdInput = ({storeId}:{storeId:string}) => {
+  const [storeKey, setStoreKey] = useState("");
   const [edit, setEdit] = useState(false);
+  const {toast} = useToast();
   const [loading, setLoading] = useState(false);
-  const [showApiKey, setShowApiKey] = useState(false);
+  const [showStoreKey, setShowStoreKey] = useState(false);
 
   useEffect(() => {
-    setWebhookSecretKey(webhookSecret);
-  }, [webhookSecret]);
+     setStoreKey(storeId);
+  }, [storeId]);
 
   const handleEditSave = async () => {
     if (edit) {
@@ -24,20 +23,24 @@ const LemonSqueezyWebhook = ({webhookSecret}:{
       
       // Simulated API call
       try{
-        const res = await updateWebhookSecret(webhookSecretKey);
+        const res = await updateStoreId(storeKey);
         if(res.status !== 200){
           throw new Error("Unable to save API Key");
         }
 
-        toast.success("Success", {
+        toast({
+          title: "Success",
           description: "API Key saved successfully",
+          variant: "default",
         });
 
-        setWebhookSecretKey(res.user?.webhookSecret || "");
+        setStoreKey(res.user?.storeId || "");
       }catch(error){
         console.error("🔴 ERROR", error);
-        toast.error("Error", {
+        toast({
+          title: "Error",
           description: "Unable to save API Key",
+          variant: "destructive",
         });
       }
       finally{
@@ -45,19 +48,19 @@ const LemonSqueezyWebhook = ({webhookSecret}:{
       }
       
     }
-    setShowApiKey(edit ? false : true);
+    setShowStoreKey(edit ? false : true);
     setEdit(!edit);
   };
 
   return (
     <div className="w-full space-y-2">
-      <Label>API Key</Label>
+      <Label>Store Id</Label>
       <div className="flex items-center gap-x-4">
         <div className="relative flex-grow">
           <Input
-            type={showApiKey ? "text" : "password"}
-            value={webhookSecretKey}
-            onChange={(e) => setWebhookSecretKey(e.target.value)}
+            type={showStoreKey ? "text" : "password"}
+            value={storeKey}
+            onChange={(e) => setStoreKey(e.target.value)}
             readOnly={!edit}
             className="pr-10"
           />
@@ -65,9 +68,9 @@ const LemonSqueezyWebhook = ({webhookSecret}:{
             variant="ghost"
             size="icon"
             className="absolute right-2 top-1/2 transform -translate-y-1/2"
-            onClick={() => setShowApiKey(!showApiKey)}
+            onClick={() => setShowStoreKey(!showStoreKey)}
           >
-            {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showStoreKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
         </div>
         <Button
@@ -83,5 +86,5 @@ const LemonSqueezyWebhook = ({webhookSecret}:{
   );
 };
 
-export default LemonSqueezyWebhook;
+export default StoreIdInput;
 
