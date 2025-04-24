@@ -5,7 +5,7 @@ import { SignedIn, UserButton, useUser } from '@clerk/nextjs'
 import { User } from '@prisma/client'
 import { Button } from '@/components/ui/button'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
-import { buySubscription } from '@/actions/lemonSqueezey'
+import { buySubscription } from '@/actions/lemonSqueezy'
 import { toast } from 'sonner'
 
 type Props = {

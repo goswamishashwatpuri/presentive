@@ -33,9 +33,9 @@ export const getSubscription = async (varientId: string) => {
   }
 };
 
-export const addProductVarientId = async (
+export const addProductVariantId = async (
   projectId: string,
-  varientId: string
+  variantId: string
 ) => {
   try {
     const checkUser = await onAuthenticateUser();
@@ -51,12 +51,12 @@ export const addProductVarientId = async (
     console.log(
       "Adding product varient id...",
       typeof projectId,
-      typeof varientId
+      typeof variantId
     );
     const project = await client.project.update({
       where: { id: projectId },
       data: {
-        varientId: varientId,
+        vriantId: variantId,
         isSellable: true,
       },
     });
@@ -72,7 +72,7 @@ export const addProductVarientId = async (
   }
 };
 
-export const BuyTemplate = async (
+export const buyTemplate = async (
   variantId: string,
   projectId: string,
   webhookSecret: string,

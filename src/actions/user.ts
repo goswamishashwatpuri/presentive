@@ -155,3 +155,20 @@ export const updateStoreId = async (storeId: string) => {
     return { status: 500 };
   }
 }
+
+export const getUser = async (userId:string) => {
+  try {
+    const userExist = await client.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (userExist) {
+      return { status: 200, user: userExist };
+    }
+    return { status: 400 };
+  } catch (error) {
+    console.log("🔴 ERROR", error);
+    return { status: 500 };
+  }
+}

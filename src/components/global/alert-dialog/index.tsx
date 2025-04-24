@@ -19,7 +19,7 @@ type Props = {
   loading?: boolean
   onClick?: () => void
   open?: boolean
-  handleOpen: () => void
+  handleOpen: (value: boolean) => void
 }
 
 function AlertDialogBox({
@@ -38,7 +38,7 @@ function AlertDialogBox({
       <AlertDialogTrigger asChild>
         {children}
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="max-w-md">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
@@ -57,7 +57,6 @@ function AlertDialogBox({
               : 'Continue'}
           </Button>
         </AlertDialogFooter>
-
       </AlertDialogContent>
     </AlertDialog>
   )

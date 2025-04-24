@@ -301,3 +301,30 @@ export const deleteAllProjects = async (projectIds: string[]) => {
     return { status: 500, error: "Internal server error." };
   }
 };
+
+export const getSellableProjects = async () => {
+  try {
+    console.log("Fetching sellable projects");
+    const checkUser = await onAuthenticateUser();
+
+    if (checkUser.status !== 200 || !checkUser.user) {
+      return { status: 403, error: "User not authenticated" };
+    }
+
+    // Fetch the sellable projects
+    const projects = await client.project.findMany({
+      where: {
+        isSellable: true,
+      },
+    });
+
+    if (projects.length === 0) {
+      return { status: 404, error: "No sellable projects found" };
+    }
+
+    return { status: 200, data: projects };
+  } catch (error) {
+    console.error("🔴 ERROR", error);
+    return { status: 500, error: "Internal server error" };
+  }
+};

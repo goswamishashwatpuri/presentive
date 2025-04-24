@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, Plus } from "lucide-react";
 import { addLemonSqueezyApiKey } from "@/actions/user";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import LemonKeyInput from "./LemonKeyInput";
-import StoreIdInput from "./StoreIdInput";
-import LemonSqueezyWebhook from "./LemonSqueezyWebhook";
+import LemonKeyInput from "./lemon-key-input";
+import StoreIdInput from "./store-input";
+import LemonSqueezyWebhook from "./lemon-squeezey-webhook";
 
 type Props = {
   lemonSqueezyApiKey: string;
@@ -31,7 +31,6 @@ const LemonSqueezAddApiKey = ({
 }: Props) => {
   console.log("🍋", !storeId);
   const router = useRouter();
-  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [newApiKey, setNewApiKey] = useState("");
   const [newStoreId, setNewStoreId] = useState("");
@@ -47,22 +46,14 @@ const LemonSqueezAddApiKey = ({
         throw new Error("Unable to add API Key");
       }
 
-      toast({
-        title: "Success",
-        description: "API Key added successfully",
-        variant: "default",
-      });
+      toast.success("API Key added successfully");
       setNewApiKey("");
       setNewStoreId("");
       setNewWebhookSecret("");
       router.refresh();
     } catch (error) {
       console.error("🔴 ERROR", error);
-      toast({
-        title: "Error",
-        description: "Unable to add API Key",
-        variant: "destructive",
-      });
+      toast.error("Unable to add API Key");
     } finally {
       setOpen(false);
     }
@@ -73,14 +64,21 @@ const LemonSqueezAddApiKey = ({
   };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col gap-4 p-4 bg-background-80 rounded-xl w-full">
+      <div className="flex flex-col gap-2">
+        <h3 className="text-lg font-semibold">Lemon Squeezy Integration</h3>
+        <p className="text-sm text-secondary">
+          Manage your Lemon Squeezy API keys and store settings
+        </p>
+      </div>
       <div className="flex w-full items-center justify-between gap-x-4">
-        <p className="text-lg">Lemon Squeezy API Key</p>
+        <p className="text-base">API Key Status: {lemonSqueezyApiKey ? "Configured" : "Not Configured"}</p>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             {(!lemonSqueezyApiKey || !storeId || !webhookSecret) && (
               <Button variant="default" className="flex items-center gap-2">
                 <Plus />
+                Configure
               </Button>
             )}
           </DialogTrigger>
@@ -107,20 +105,23 @@ const LemonSqueezAddApiKey = ({
 
               <Input
                 type="password"
-                placeholder="Enter Webhook Key"
+                placeholder="Enter Webhook Secret"
                 value={newWebhookSecret}
                 onChange={(e) => setNewWebhookSecret(e.target.value)}
                 className=""
               />
-
-              <Button onClick={handleSave}>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSave} disabled={loading}>
                 {loading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
+                    <Loader2 className="w-4 h-4 animate-spin" /> Saving...
                   </>
                 ) : (
-                  "Set API Key"
+                  "Save"
                 )}
               </Button>
             </div>

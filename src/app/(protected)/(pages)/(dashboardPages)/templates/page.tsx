@@ -1,9 +1,8 @@
 import { getSellableProjects } from "@/actions/project";
-import { NotFound } from "@/components/global/not-found";
+import NotFound from "@/components/global/not-found";
 import React from "react";
-import { BuyTemplateCard } from "./_components/BuyTemplateCards";
+import { BuyTemplateCard } from "./_components/buy-template-cards";
 import { onAuthenticateUser } from "@/actions/user";
-import { PrismaUser } from "@/lib/types";
 
 const page = async () => {
   const sellableProducts = await getSellableProjects();
@@ -16,7 +15,7 @@ const page = async () => {
             Templates
           </h1>
           <p className="text-base font-normal dark:text-secondary">
-            All of your work in one place 
+            All of your work in one place
           </p>
         </div>
       </div>
@@ -25,7 +24,7 @@ const page = async () => {
       {sellableProducts.data && sellableProducts?.data?.length > 0 && checkUser.user ? (
         <BuyTemplateCard
           projects={sellableProducts.data}
-          user={checkUser.user as PrismaUser}
+          user={checkUser.user}
         />
       ) : (
         <NotFound />

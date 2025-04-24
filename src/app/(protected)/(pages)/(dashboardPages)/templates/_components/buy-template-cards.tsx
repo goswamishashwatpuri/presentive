@@ -3,27 +3,24 @@ import {
   containerVariants,
   itemVariants,
   themes,
-  timeAgo,
 } from "@/lib/constants";
+import { timeAgo } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Project } from "@prisma/client";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { BuyTemplate } from "@/actions/lemonSqueezy";
+import { buyTemplate } from "@/actions/lemonSqueezy";
 import { getUser } from "@/actions/user";
-import { ThumbnailPreview } from "@/components/global/project-card/ThumbnailPreview";
+import ThumbnailPreview from "@/components/global/projects/thumbnail-preview";
 import { useRouter } from "next/navigation";
-import { PrismaUser } from "@/lib/types";
-
+import { toast } from "sonner";
 type Props = {
   projects: Project[];
-  user: PrismaUser;
+  user: any;
 };
 
 export const BuyTemplateCard = ({ projects, user }: Props) => {
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
   const router = useRouter();
 
   const handleBuy = async (
@@ -35,11 +32,7 @@ export const BuyTemplateCard = ({ projects, user }: Props) => {
 
     if (!variantId) {
       setLoading(false);
-      toast({
-        title: "Error",
-        description: "Variant not found",
-        variant: "destructive",
-      });
+      toast.error("Variant not found");
       return;
     }
 
@@ -51,16 +44,12 @@ export const BuyTemplateCard = ({ projects, user }: Props) => {
       !seller.user?.webhookSecret
     ) {
       setLoading(false);
-      toast({
-        title: "Error",
-        description: "Seller Details not found",
-        variant: "destructive",
-      });
+      toast.error("Seller Details not found");
       return;
     }
 
     try {
-      const res = await BuyTemplate(
+      const res = await buyTemplate(
         variantId,
         projectId,
         seller.user.webhookSecret,
@@ -70,21 +59,11 @@ export const BuyTemplateCard = ({ projects, user }: Props) => {
       if (res.status !== 200) {
         throw new Error("Unable to buy template");
       }
-      toast({
-        title: "Redirecting....",
-        description: "Redirecting to Lemon Squeezy",
-        variant: "default",
-      });
-      // console.log("Template bought successfully", res);
-
+      toast.success("Redirecting to Lemon Squeezy");
       router.push(res.url);
     } catch (error) {
       console.error("🔴 ERROR", error);
-      toast({
-        title: "Error",
-        description: "Unable to buy template",
-        variant: "destructive",
-      });
+      toast.error("Unable to buy template");
     } finally {
       setLoading(false);
     }
@@ -104,13 +83,11 @@ export const BuyTemplateCard = ({ projects, user }: Props) => {
         >
           <div
             className="relative aspect-[16/10] overflow-hidden rounded-lg cursor-pointer"
-            onClick={() => {}}
+            onClick={() => { }}
           >
             <ThumbnailPreview
               slide={JSON.parse(JSON.stringify(project.slides))?.[0]}
-              theme={
-                themes.find((t) => t.name === project.themeName) || themes[0]
-              }
+              themeName={project.themeName}
             />
           </div>
           <div className="w-full">
@@ -129,11 +106,11 @@ export const BuyTemplateCard = ({ projects, user }: Props) => {
                   disabled={
                     loading ||
                     user.id === project.userId ||
-                    user?.PurchasedProjects?.some((p) => p.id === project.id)
+                    user?.PurchasedProjects?.some((p: any) => p.id === project.id)
                   }
                   onClick={() =>
                     handleBuy(
-                      project.varientId || "",
+                      project.vriantId || "",
                       project.id,
                       project.userId
                     )
@@ -141,9 +118,9 @@ export const BuyTemplateCard = ({ projects, user }: Props) => {
                 >
                   {loading
                     ? "Processing..."
-                    : user.PurchasedProjects?.some((p) => p.id === project.id)
-                    ? "Owned"
-                    : "Buy"}
+                    : user.PurchasedProjects?.some((p: any) => p.id === project.id)
+                      ? "Owned"
+                      : "Buy"}
                 </Button>
               </div>
             </div>

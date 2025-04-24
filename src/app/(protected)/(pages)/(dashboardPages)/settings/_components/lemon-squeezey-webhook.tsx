@@ -3,15 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from 'lucide-react';
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
 import { updateWebhookSecret } from "@/actions/user";
-
+import { toast } from "sonner";
 const LemonSqueezyWebhook = ({webhookSecret}:{
   webhookSecret: string;
 }) => {
   const [webhookSecretKey, setWebhookSecretKey] = useState("");
   const [edit, setEdit] = useState(false);
-  const {toast} = useToast();
   const [loading, setLoading] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
 
@@ -30,20 +28,12 @@ const LemonSqueezyWebhook = ({webhookSecret}:{
           throw new Error("Unable to save API Key");
         }
 
-        toast({
-          title: "Success",
-          description: "API Key saved successfully",
-          variant: "default",
-        });
+        toast.success("API Key saved successfully");
 
         setWebhookSecretKey(res.user?.webhookSecret || "");
       }catch(error){
         console.error("🔴 ERROR", error);
-        toast({
-          title: "Error",
-          description: "Unable to save API Key",
-          variant: "destructive",
-        });
+        toast.error("Unable to save API Key");
       }
       finally{
         setLoading(false);
@@ -56,7 +46,7 @@ const LemonSqueezyWebhook = ({webhookSecret}:{
 
   return (
     <div className="w-full space-y-2">
-      <Label>API Key</Label>
+      <Label>Webhook Secret</Label>
       <div className="flex items-center gap-x-4">
         <div className="relative flex-grow">
           <Input

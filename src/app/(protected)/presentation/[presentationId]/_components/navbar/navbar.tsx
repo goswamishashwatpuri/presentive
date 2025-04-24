@@ -8,6 +8,7 @@ import { getProjectById } from '@/actions/project'
 import { Project } from '@prisma/client'
 import { toast } from 'sonner'
 import PresentationMode from './presentation-mode'
+import SellTemplate from "./sell-template";
 
 type Props = {
   presentationId: string
@@ -55,15 +56,9 @@ function Navbar({ presentationId }: Props) {
           <span className='hidden sm:inline'>Return Home</span>
         </Button>
       </Link>
-      <Link
-        href={`/presentation/template-market`}
-        className='truncate max-w-[150px] hidden sm:block'
-        passHref
-      >
-        {/* {projectDetails?.title} */}
-        Presentation Editor
-      </Link>
-
+      <span className='truncate max-w-[150px] hidden sm:block'>
+        Editor
+      </span>
       <div className='flex items-center gap-4'>
         <Button
           variant={'outline'}
@@ -74,8 +69,7 @@ function Navbar({ presentationId }: Props) {
         >
           <Share2 className='w-4 h-4' />
         </Button>
-        {/* TODO: Add sell template functionality */}
-        {/* <SellTemplate /> */}
+        <SellTemplate />
         <Button
           variant={'default'}
           onClick={() => setIsPresentationMode(true)}
