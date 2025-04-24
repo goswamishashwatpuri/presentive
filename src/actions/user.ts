@@ -127,6 +127,7 @@ export const updateWebhookSecret = async (webhookSecret: string) => {
     return { status: 500 };
   }
 }
+
 export const updateStoreId = async (storeId: string) => {
 
   try {

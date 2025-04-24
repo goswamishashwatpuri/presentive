@@ -2,28 +2,34 @@
 
 import { currentUser } from "@clerk/nextjs/server"
 import { layoutGenerationSession, outlineGenerationSession } from "./aiModel"
-import { onAuthenticateUser } from "./user"
 import { client } from "@/lib/prisma"
+import { v4 as uuidv4 } from 'uuid';
+import { ContentType, Slide } from "@/lib/types";
 
 export const generateCreativePrompt = async (prompt: string) => {
   const finalPrompt = `
   Create a coherent and relevant outline for the following prompt: ${prompt}.
   The outline should consist of at least 6 points, with each point written as a single sentence.
-  Ensure the outline is well-structured and directly related to the topic.
+  Ensure the outline is well-structured and directly related to the topic. 
   Return the output in the following JSON format:
+
   {
     "outlines": [
       "Point 1",
-      "Point 2", 
+      "Point 2",
       "Point 3",
       "Point 4",
       "Point 5",
-      "Point 6"
+      "Point 6",
+      "Point 7",
+      "Point 8",
+      "Point 9",
+      "Point 10",
     ]
   }
-    Exsure the JSON is valid and properly formatted. 
-    Do not include any other desktop explanations outside the JSON.
-  `
+
+  Ensure that the JSON is valid and properly formatted. Do not include any other text or explanations outside the JSON.
+  `;
 
   try {
     const result = await outlineGenerationSession.sendMessage(finalPrompt)
@@ -950,38 +956,70 @@ const existingLayouts = [
   }
 ]
 
-export const generateLayoutsJson = async (outlineArray: string[]) => {
-  const prompt = `
-  You are a highly creative AI that generates JSON-based layouts for presentations. 
-  I will provide you with an array of outlines, and for each outline, you must generate a unique and creative layout. 
-  Use the existing layouts as examples for structure and design, and generate unique designs based on the provided outline.
-
-### Guidelines:
-1. Write layouts based on the specific outline provided.
-2. Use diverse and engaging designs, ensuring each layout is unique.
-3. Adhere to the structure of existing layouts but add new styles or components if needed.
-4. Fill placeholder data into content fields where required.
-5. Generate unique image placeholders for the 'content' property of image components and also alt text according to the outline.
-6. Ensure proper formatting and schema alignment for the output JSON.
-### Example Layouts:
-${JSON.stringify(existingLayouts, null, 2)}
-
-### Outline Array:
-${JSON.stringify(outlineArray)}
-
-For each entry in the outline array, generate:
-- A unique JSON layout with creative designs.
-- Properly filled content, including placeholders for image components.
-- Clear and well-structured JSON data.
-For Images:
-- The alt text should describe the image clearly and concisely.
-- Focus on the main subject(s) of the image and any relevant details such as colors, shapes, people, or objects.
-- Ensure the alt text aligns with the context of the presentation slide it will be used on (e.g., professional, educational, business-related).
-- Avoid using terms like "image of" or "picture of," and instead focus directly on the content and meaning.
-
-Output the layouts in JSON format. Ensure there are no duplicate layouts across the array.
-
-`
+const generateLayoutsJson = async (outlineArray: string[]) => {
+  const prompt = `### Guidelines
+  You are a highly creative AI that generates JSON-based layouts for presentations. I will provide you with a pattern and a format to follow, and for each outline, you must generate unique layouts and contents and give me the output in the JSON format expected.
+  Our final JSON output is a combination of layouts and elements. The available LAYOUTS TYPES are as follows: "accentLeft", "accentRight", "imageAndText", "textAndImage", "twoColumns", "twoColumnsWithHeadings", "threeColumns", "threeColumnsWithHeadings", "fourColumns", "twoImageColumns", "threeImageColumns", "fourImageColumns", "tableLayout".
+  The available CONTENT TYPES are "heading1", "heading2", "heading3", "heading4", "title", "paragraph", "table", "resizable-column", "image", "blockquote", "numberedList", "bulletList", "todoList", "calloutBox", "codeBlock", "tableOfContents", "divider", "column"
+  
+  Use these outlines as a starting point for the content of the presentations 
+    ${JSON.stringify(outlineArray)}
+  
+  The output must be an array of JSON objects.
+    1. Write layouts based on the specific outline provided. Do not use types that are not mentioned in the example layouts.
+    2. Generate layout for each layout and ensures each layout is unique for each outline.
+    3. Adhere to the structure of existing layouts
+    4. Fill the content property with relative to the outline provided and also fille placeholder.
+    5. Generate unique image placeholders for the 'content' property of image components and also alt text according to the outline.
+    6. Ensure proper formatting and schema alignment for the output JSON.
+  7. First create LAYOUTS TYPES  at the top most level of the JSON output as follows ${JSON.stringify(
+    [
+      {
+        slideName: "Blank card",
+        type: "blank-card",
+        className:
+          "p-8 mx-auto flex justify-center items-center min-h-[200px]",
+        content: {},
+      },
+    ]
+  )}
+  
+  8.The content property of each LAYOUTS TYPE should start with “column” and within the columns content property you can use any  of the CONTENT TYPES I provided above. Resizable-column, column and other multi element contents should be an array because you can have more elements inside them nested. Static elements like title and paragraph should have content set to a string.Here is an example of what 1 layout with 1 column with 1 title inside would look like:
+  ${JSON.stringify([
+    {
+      slideName: "Blank card",
+      type: "blank-card",
+      className: "p-8 mx-auto flex justify-center items-center min-h-[200px]",
+      content: {
+        id: uuidv4(),
+        type: "column" as ContentType,
+        name: "Column",
+        content: [
+          {
+            id: uuidv4(),
+            type: "title" as ContentType,
+            name: "Title",
+            content: "",
+            placeholder: "Untitled Card",
+          },
+        ],
+      },
+    },
+  ])}
+  
+  
+  9. Here is a final example of an example output for you to get an idea 
+  ${JSON.stringify(existingLayouts)}
+  
+   For Images 
+    - The alt text should describe the image clearly and concisely.
+    - Focus on the main subject(s) of the image and any relevant details such as colors, shapes, people, or objects.
+    - Ensure the alt text aligns with the context of the presentation slide it will be used on (e.g., professional, educational, business-related).
+    - Avoid using terms like "image of" or "picture of," and instead focus directly on the content and meaning.
+    - use placehold.co for image src donot use any unsplash for any free image from anywhere.
+  
+    Output the layouts in JSON format. Ensure there are no duplicate layouts across the array.
+  `;
 
   try {
     const result = await layoutGenerationSession.sendMessage(prompt)
@@ -1064,3 +1102,117 @@ export const generateLayouts = async (theme: string, projectId: string) => {
     return { status: 500, error: "Internal server error.", data: [] }
   }
 }
+
+
+//image generation functions
+
+export const generateImages = async (slides: Slide[]) => {
+  try {
+    console.log("🟢 Generating images for slides...");
+
+    // Create a deep clone to preserve original data
+    const slidesCopy: Slide[] = JSON.parse(JSON.stringify(slides));
+
+    // Process cloned slides
+    const processedSlides = await Promise.all(
+      slidesCopy.map(async (slide) => {
+        const updatedContent = await processSlideContent(slide.content);
+        return { ...slide, content: updatedContent };
+      })
+    );
+
+    console.log("🟢 Images generated successfully");
+    return { status: 200, data: processedSlides };
+  } catch (error) {
+    console.error("🔴 ERROR:", error);
+    return { status: 500, error: "Internal server error" };
+  }
+};
+
+const processSlideContent = async (content: ContentItem): Promise<ContentItem> => {
+  // Create a deep clone of the content structure
+  const contentClone: ContentItem = JSON.parse(JSON.stringify(content));
+  const imageComponents = findImageComponents(contentClone);
+
+  // Process images in parallel while maintaining structure
+  await Promise.all(
+    imageComponents.map(async (component) => {
+      try {
+        const newUrl = await generateImageUrl(component.alt || "Placeholder Image");
+        component.content = newUrl;
+      } catch (error) {
+        console.error("🔴 Image generation failed:", error);
+        component.content = "https://via.placeholder.com/1024";
+      }
+    })
+  );
+
+  return contentClone;
+};
+
+const findImageComponents = (layout: ContentItem): ContentItem[] => {
+  const images: ContentItem[] = [];
+
+  const traverse = (node: ContentItem) => {
+    if (node.type === "image") {
+      images.push(node);
+    }
+    
+    if (Array.isArray(node.content)) {
+      node.content.forEach(child => traverse(child as ContentItem));
+    } else if (typeof node.content === "object" && node.content !== null) {
+      traverse(node.content);
+    }
+  };
+
+  traverse(layout);
+  return images;
+};
+
+const generateImageUrl = async (prompt: string): Promise<string> => {
+  try {
+    const improvedPrompt = `
+    Create a highly realistic, professional image based on the following description. The image should look as if captured in real life, with attention to detail, lighting, and texture. 
+
+    Description: ${prompt}
+
+    Important Notes:
+    - The image must be in a photorealistic style and visually compelling.
+    - Ensure all text, signs, or visible writing in the image are in English.
+    - Pay special attention to lighting, shadows, and textures to make the image as lifelike as possible.
+    - Avoid elements that appear abstract, cartoonish, or overly artistic. The image should be suitable for professional presentations.
+    - Focus on accurately depicting the concept described, including specific objects, environment, mood, and context. Maintain relevance to the description provided.
+
+    Example Use Cases: Business presentations, educational slides, professional designs.
+  `;
+    const dalleResponse = await openai.images.generate({
+      prompt: improvedPrompt,
+      n: 1,
+      size: "1024x1024",
+    });
+    console.log("🟢 Image generated successfully:", dalleResponse.data[0]?.url);
+    const imageUrl = dalleResponse.data[0]?.url;
+    if (!imageUrl) {
+      console.error("Failed to generate image");
+      return "https://via.placeholder.com/1024";
+    }
+    // Download the image from DALL·E
+    const imageResponse = await axios.get(imageUrl, {
+      responseType: "arraybuffer",
+    });
+    const imageBuffer = Buffer.from(imageResponse.data);
+    const result = await uploadDirect(imageBuffer, {
+      publicKey: process.env.UPLOADCARE_PUBLIC_KEY!,
+      store: "auto",
+    });
+
+    console.log("🟢 Image uploaded to Uploadcare:", result?.uuid);
+
+    return result?.uuid
+      ? `https://ucarecdn.com/${result.uuid}/-/preview/`
+      : "https://via.placeholder.com/1024";
+  } catch (error) {
+    console.error("Failed to generate image:", error);
+    return "https://via.placeholder.com/1024";
+  }
+};

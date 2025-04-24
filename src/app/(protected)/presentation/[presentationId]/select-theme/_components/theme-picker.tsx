@@ -1,13 +1,14 @@
 'use client'
 
-import { generateLayouts } from '@/actions/ai'
+import { generateLayouts, generateImages } from '@/actions/ai'
+import { updateSlides } from '@/actions/project'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Theme } from '@/lib/types'
+import { Slide, Theme } from '@/lib/types'
 import { useSlideStore } from '@/store/useSlideStore'
 import { motion } from 'framer-motion'
 import { Loader2, Wand2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import React, { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -19,7 +20,8 @@ type Props = {
 
 function ThemePicker({ selectedTheme, themes, onThemeSelect }: Props) {
   const router = useRouter()
-  const { project, setSlides, currentTheme } = useSlideStore()
+  const params = useParams()
+  const { project, setSlides, currentTheme, setProject } = useSlideStore()
   const [loading, setLoading] = useState(false)
 
   async function handleGenerateLayouts() {
@@ -50,7 +52,9 @@ function ThemePicker({ selectedTheme, themes, onThemeSelect }: Props) {
         description: "Layouts generated successfully"
       })
       setSlides(res.data)
+
       router.push(`/presentation/${project?.id}`)
+      fetchImages(res.data)
 
     } catch (error) {
       toast.error("Error", {
@@ -61,6 +65,37 @@ function ThemePicker({ selectedTheme, themes, onThemeSelect }: Props) {
     }
   }
 
+  const fetchImages = async (slides:Slide[]) => {
+   
+    try {
+      console.log("🟢 Fetching images...");
+  
+      const updatedSlides = await generateImages(slides);
+      if (updatedSlides.status !== 200 || !updatedSlides.data) {
+        throw new Error("Failed to generate images");
+      }
+  
+      console.log("🟢 Images generated successfully, updating slides...", updatedSlides);
+      setSlides(updatedSlides.data);
+  
+      // Save updated slides in the database
+      const updateSlide = await updateSlides(
+        params.presentationId as string,
+        JSON.stringify(updatedSlides.data)
+      );
+  
+      if (updateSlide.status === 200 && updateSlide.data) {
+        setProject(updateSlide.data);
+      }
+    } catch (error) {
+      console.error("🔴 Error generating images:", error);
+      toast.error("Error", {
+        description: "Failed to generate images",
+      });
+    } finally {
+      // setImageLoading(false);
+    }
+  };
 
   return (
     <div

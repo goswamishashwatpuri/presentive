@@ -30,7 +30,6 @@ export async function getAllProjects() {
   }
 }
 
-
 export const getRecentProjects = async () => {
   try {
     const checkUser = await onAuthenticateUser()

@@ -135,8 +135,6 @@ export const BuyTemplate = async (
   }
 };
 
-
-
 export const buySubscription = async (
   buyerUserId: string
 ) => {
