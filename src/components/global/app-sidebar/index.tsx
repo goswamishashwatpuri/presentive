@@ -37,7 +37,7 @@ function AppSidebar({ recentProjects, user, ...props }: Props) {
               />
             </Avatar>
           </div>
-          <span className='truncate text-primary text-lg font-semibold'>
+          <span className='truncate text-lg font-bold bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent'>
             {" "}Presentive
           </span>
         </SidebarMenuButton>
