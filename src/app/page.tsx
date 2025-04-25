@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { 
-  ArrowRight, 
-  Presentation, 
-  Sparkles, 
-  Gauge, 
-  Zap, 
-  Check, 
-  Menu, 
+import {
+  ArrowRight,
+  Presentation,
+  Sparkles,
+  Gauge,
+  Zap,
+  Check,
+  Menu,
   X,
   MousePointerClick,
   Brain,
@@ -27,6 +27,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { MasterRecursiveComponent } from "@/app/(protected)/presentation/[presentationId]/_components/editor/master-recursive-component";
 import { ContentItem, ContentType } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 // Simple mock for demo slide
 const demoSlide: ContentItem = {
@@ -63,12 +64,156 @@ const demoSlide: ContentItem = {
   className: "space-y-4 p-6"
 };
 
+// Demo slides data
+const demoSlides = [
+  {
+    id: uuidv4(),
+    type: "column" as ContentType,
+    name: "Title Slide",
+    content: [
+      {
+        id: uuidv4(),
+        type: "title" as ContentType,
+        name: "Title",
+        content: "Create Amazing Presentations",
+        placeholder: "Title"
+      },
+      {
+        id: uuidv4(),
+        type: "heading2" as ContentType,
+        name: "Heading2",
+        content: "With Presentive's AI-Powered Platform",
+        placeholder: "Subtitle"
+      }
+    ],
+    className: "space-y-6 p-6"
+  },
+  {
+    id: uuidv4(),
+    type: "column" as ContentType,
+    name: "Content Slide",
+    content: [
+      {
+        id: uuidv4(),
+        type: "heading2" as ContentType,
+        name: "Heading2",
+        content: "Why Choose Presentive?",
+        placeholder: "Section Title"
+      },
+      {
+        id: uuidv4(),
+        type: "bulletList" as ContentType,
+        name: "Bullet List",
+        content: [
+          "AI-powered slide generation saves hours of work",
+          "Beautiful, modern templates for any occasion",
+          "Real-time collaboration with your team",
+          "Export to multiple formats instantly"
+        ]
+      }
+    ],
+    className: "space-y-8 p-6"
+  },
+  {
+    id: uuidv4(),
+    type: "resizable-column" as ContentType,
+    name: "Split Content",
+    content: [
+      {
+        id: uuidv4(),
+        type: "column" as ContentType,
+        name: "Left Column",
+        content: [
+          {
+            id: uuidv4(),
+            type: "heading3" as ContentType,
+            name: "Heading3",
+            content: "Powerful Features",
+            placeholder: "Column Title"
+          },
+          {
+            id: uuidv4(),
+            type: "bulletList" as ContentType,
+            name: "Bullet List",
+            content: [
+              "Smart slide suggestions",
+              "Custom themes & branding",
+              "Advanced animations",
+              "One-click sharing"
+            ]
+          }
+        ],
+        className: "space-y-4"
+      },
+      {
+        id: uuidv4(),
+        type: "column" as ContentType,
+        name: "Right Column",
+        content: [
+          {
+            id: uuidv4(),
+            type: "heading3" as ContentType,
+            name: "Heading3",
+            content: "Built for Teams",
+            placeholder: "Column Title"
+          },
+          {
+            id: uuidv4(),
+            type: "bulletList" as ContentType,
+            name: "Bullet List",
+            content: [
+              "Real-time collaboration",
+              "Version control",
+              "Comment & feedback",
+              "Role-based access"
+            ]
+          }
+        ],
+        className: "space-y-4"
+      }
+    ],
+    className: "gap-8 p-6"
+  }
+];
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
-  
+
+  // Demo section scroll animation refs and controls
+  const demoRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: demoRef,
+    offset: ["start start", "end end"]
+  });
+
+  const demoWidth = useTransform(scrollYProgress,
+    [0, 0.2, 0.3],
+    ["100%", "100%", "58.33%"]
+  );
+
+  const featuresOpacity = useTransform(scrollYProgress,
+    [0.2, 0.3],
+    [0, 1]
+  );
+
+  const featuresX = useTransform(scrollYProgress,
+    [0.2, 0.3],
+    [100, 0]
+  );
+
+  const featuresY = useTransform(scrollYProgress,
+    [0.4, 0.7],
+    ["0%", "-100%"]
+  );
+
+  const containerY = useTransform(scrollYProgress,
+    [0.8, 1],
+    ["0%", "-100%"]
+  );
+
   // Function to handle content changes in the demo (empty implementation)
-  const handleContentChange = () => {};
+  const handleContentChange = () => { };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,7 +224,7 @@ export default function Home() {
         const rect = element.getBoundingClientRect();
         return rect.top <= 100 && rect.bottom >= 100;
       });
-      
+
       if (currentSection) {
         setActiveSection(currentSection);
       }
@@ -110,7 +255,7 @@ export default function Home() {
             <div className="flex items-center">
               <span className="text-white text-2xl font-bold">Presentive</span>
             </div>
-            
+
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               {[
@@ -122,16 +267,15 @@ export default function Home() {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`text-sm font-medium transition-colors hover:text-orange-400 ${
-                    activeSection === item.id ? "text-orange-400" : "text-gray-400"
-                  }`}
+                  className={`text-sm font-medium transition-colors hover:text-orange-400 ${activeSection === item.id ? "text-orange-400" : "text-gray-400"
+                    }`}
                 >
                   {item.label}
                 </button>
               ))}
               <div className="h-5 w-px bg-gray-800" />
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 asChild
                 className="relative group px-4 py-2 h-9 bg-transparent hover:bg-transparent border-0"
               >
@@ -143,10 +287,10 @@ export default function Home() {
                 </Link>
               </Button>
             </nav>
-            
+
             {/* Mobile Menu Button */}
-            <button 
-              className="md:hidden text-gray-400 hover:text-white transition-colors" 
+            <button
+              className="md:hidden text-gray-400 hover:text-white transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -154,7 +298,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        
+
         {/* Mobile Navigation */}
         <AnimatePresence>
           {isMenuOpen && (
@@ -174,19 +318,18 @@ export default function Home() {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`block w-full text-left px-4 py-2 text-sm font-medium rounded-lg ${
-                      activeSection === item.id
+                    className={`block w-full text-left px-4 py-2 text-sm font-medium rounded-lg ${activeSection === item.id
                         ? "bg-orange-500/10 text-orange-400"
                         : "text-gray-400 hover:text-white"
-                    }`}
+                      }`}
                   >
                     {item.label}
                   </button>
                 ))}
                 <div className="pt-2">
-                  <Button 
-                    size="sm" 
-                    className="w-full relative group px-4 py-2 h-9 bg-transparent hover:bg-transparent border-0" 
+                  <Button
+                    size="sm"
+                    className="w-full relative group px-4 py-2 h-9 bg-transparent hover:bg-transparent border-0"
                     asChild
                   >
                     <Link href="/signin" className="relative">
@@ -207,8 +350,8 @@ export default function Home() {
       <section id="home" className="flex flex-col items-center justify-center text-center px-4 pt-36 pb-24 md:pt-48 md:pb-32 relative overflow-hidden bg-black">
         <div className="absolute inset-0 bg-gradient-to-br from-black via-background to-background opacity-90" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05),transparent_50%)]" />
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
@@ -220,18 +363,18 @@ export default function Home() {
               <span>AI-Powered Presentation Creator</span>
             </div>
           </div>
-          
+
           <h1 className="text-4xl md:text-6xl lg:text-[85px] font-bold tracking-tight text-white leading-tight">
             Create stunning<br />presentations with <span className="text-orange-400">AI</span>
           </h1>
           <p className="mt-6 text-xl text-gray-400 max-w-2xl mx-auto">
-            Presentive helps you build professional, beautiful presentations in minutes, 
+            Presentive helps you build professional, beautiful presentations in minutes,
             not hours. Powered by AI to save you time and boost your impact.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              asChild 
+            <Button
+              size="lg"
+              asChild
               className="relative group px-6 py-2 h-11 bg-transparent hover:bg-transparent border-0"
             >
               <Link href="/signin" className="relative">
@@ -244,9 +387,9 @@ export default function Home() {
                 </span>
               </Link>
             </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
+            <Button
+              variant="outline"
+              size="lg"
               onClick={() => scrollToSection("demo")}
               className="relative group px-6 py-2 h-11 bg-transparent hover:bg-transparent border-0"
             >
@@ -301,7 +444,7 @@ export default function Home() {
                 description: "Share your presentation with anyone, anywhere, on any device"
               }
             ].map((step, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -384,17 +527,15 @@ export default function Home() {
                 description: "Export to multiple formats"
               }
             ].map((feature, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className={`p-6 group relative ${
-                  i % 4 !== 3 ? 'border-r border-gray-800' : ''
-                } ${
-                  i < 4 ? 'border-b border-gray-800' : ''
-                }`}
+                className={`p-6 group relative ${i % 4 !== 3 ? 'border-r border-gray-800' : ''
+                  } ${i < 4 ? 'border-b border-gray-800' : ''
+                  }`}
               >
                 <div className="mb-4 p-3 rounded-lg bg-orange-500/10 inline-block group-hover:scale-110 transition-transform">
                   <div className="text-orange-400">{feature.icon}</div>
@@ -408,110 +549,272 @@ export default function Home() {
       </section>
 
       {/* Demo Section */}
-      <section id="demo" className="py-24 px-4 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 to-background" />
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
-                Powerful features
-              </h2>
-              <p className="mt-4 text-xl text-gray-400 max-w-2xl mx-auto">
-                Everything you need to create stunning presentations
-              </p>
-            </motion.div>
+      <section ref={demoRef} id="demo" className="relative">
+        <div className="h-[250vh]">
+
+          {/* Title - Now outside sticky container */}
+          <div className="text-center pt-24 pb-12 px-4">
+            <div className="max-w-7xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+              >
+                <h2 className="z-[999] text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+                  Powerful features
+                </h2>
+                <p className="mt-4 text-xl text-gray-400 max-w-2xl mx-auto">
+                  Everything you need to create stunning presentations
+                </p>
+              </motion.div>
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="sticky top-32"
-            >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 backdrop-blur-sm">
-                <div className="absolute top-0 left-0 right-0 h-10 bg-black/80 backdrop-blur-sm border-b border-white/10 flex items-center px-4 gap-2 z-20">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
-                  <div className="ml-4 text-xs text-gray-400">Presentive - AI Presentation Creator</div>
-                </div>
-                
-                <div className="pt-10 bg-gradient-to-br from-background/80 to-background/90 aspect-video flex items-center justify-center px-6 py-12">
-                  <div className="w-full max-w-2xl mx-auto bg-background/50 rounded-xl shadow-xl overflow-hidden border border-border/50 backdrop-blur-sm">
-                    <div className="p-8">
-                      <MasterRecursiveComponent
-                        content={demoSlide}
-                        onContentChange={handleContentChange}
-                        isPreview={true}
-                        isEditable={false}
-                        slideId="demo-slide"
-                      />
+          {/* Demo Frame Container - Now in its own sticky container */}
+          <div className="sticky top-24 w-full px-4">
+            <div className="max-w-7xl mx-auto">
+              <div className="w-full flex items-start gap-8 relative">
+                {/* Demo Window */}
+                <motion.div
+                  style={{ 
+                    width: demoWidth,
+                    height: '80vh'
+                  }}
+                  className="relative"
+                >
+                  <div className="h-full relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 backdrop-blur-sm flex flex-col">
+                    {/* Window Controls */}
+                    <div className="absolute top-0 left-0 right-0 h-12 bg-black/90 backdrop-blur-sm border-b border-white/10 flex items-center px-4 z-20">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                      </div>
+                      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3">
+                        <div className="text-xs text-gray-400 flex items-center gap-2">
+                          <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
+                          Presentive - AI Presentation Creator
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Toolbar */}
+                    <div className="absolute top-12 left-0 right-0 h-10 bg-black/50 backdrop-blur-sm border-b border-white/5 flex items-center px-4 gap-4 z-10">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1.5">
+                          <button className="px-2.5 h-6 rounded bg-white/5 hover:bg-white/10 transition-colors text-xs text-gray-400">File</button>
+                          <button className="px-2.5 h-6 rounded bg-white/5 hover:bg-white/10 transition-colors text-xs text-gray-400">Edit</button>
+                          <button className="px-2.5 h-6 rounded bg-white/5 hover:bg-white/10 transition-colors text-xs text-gray-400">View</button>
+                        </div>
+                        <div className="w-px h-4 bg-white/10"></div>
+                        <div className="flex items-center gap-1.5">
+                          <button className="w-6 h-6 rounded bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center">
+                            <Presentation className="w-3.5 h-3.5 text-gray-400" />
+                          </button>
+                          <button className="w-6 h-6 rounded bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center">
+                            <Settings className="w-3.5 h-3.5 text-gray-400" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Main Content Area */}
+                    <div className="flex-1 pt-[5.5rem] bg-gradient-to-br from-background via-background/95 to-background/90 relative overflow-hidden">
+                      {/* Background Gradient Effect */}
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05),transparent_50%)]"></div>
+
+                      <div className="relative w-full h-full flex">
+                        {/* Left Sidebar - Slides */}
+                        <div className="w-[200px] h-full border-r border-white/5 bg-black/20 backdrop-blur-sm p-3 flex flex-col gap-2">
+                          {demoSlides.map((slide, index) => (
+                            <div
+                              key={slide.id}
+                              className={cn(
+                                "w-full aspect-[16/9] rounded-lg transition-all cursor-pointer overflow-hidden group relative",
+                                index === 1 ? "ring-2 ring-orange-500 ring-offset-2 ring-offset-black" : "hover:bg-white/10"
+                              )}
+                            >
+                              {/* Slide Preview */}
+                              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm p-2">
+                                <div className="transform scale-[0.15] origin-top-left w-[600%] h-[600%]">
+                                  <MasterRecursiveComponent
+                                    content={slide}
+                                    onContentChange={() => { }}
+                                    isPreview={true}
+                                    isEditable={false}
+                                    slideId={slide.id}
+                                  />
+                                </div>
+                              </div>
+                              {/* Slide Number */}
+                              <div className="absolute bottom-1 right-1.5 text-[10px] text-gray-500 font-medium">
+                                {index + 1}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Presentation Area */}
+                        <div className="flex-1 p-8 bg-gradient-to-br from-gray-900/50 via-black/30 to-black/50">
+                          <div className="w-full h-full max-w-[95%] mx-auto bg-white/[0.02] rounded-xl shadow-2xl overflow-hidden border border-white/10 backdrop-blur-sm">
+                            <div className="p-10">
+                              <MasterRecursiveComponent
+                                content={demoSlides[1]}
+                                onContentChange={handleContentChange}
+                                isPreview={true}
+                                isEditable={false}
+                                slideId="demo-slide"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right Sidebar - Properties */}
+                        <div className="w-[240px] h-full border-l border-white/5 bg-black/20 backdrop-blur-sm p-4 flex flex-col gap-4">
+                          {/* Theme Colors */}
+                          <div className="space-y-3">
+                            <div className="text-xs font-medium text-gray-400">Theme Colors</div>
+                            <div className="grid grid-cols-5 gap-2">
+                              {[
+                                "bg-orange-500",
+                                "bg-pink-500",
+                                "bg-purple-500",
+                                "bg-blue-500",
+                                "bg-green-500",
+                                "bg-white",
+                                "bg-gray-400",
+                                "bg-gray-600",
+                                "bg-gray-800",
+                                "bg-black"
+                              ].map((color) => (
+                                <div
+                                  key={color}
+                                  className={cn(
+                                    "w-8 h-8 rounded-full ring-2 ring-offset-2 ring-offset-black cursor-pointer",
+                                    color,
+                                    color === "bg-orange-500" ? "ring-orange-500" : "ring-transparent hover:ring-white/20"
+                                  )}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Layout Templates */}
+                          <div className="space-y-3">
+                            <div className="text-xs font-medium text-gray-400">Layout</div>
+                            <div className="grid grid-cols-2 gap-2">
+                              {[
+                                "Title Slide",
+                                "Content",
+                                "Two Columns",
+                                "Image Left"
+                              ].map((layout) => (
+                                <div
+                                  key={layout}
+                                  className="px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors cursor-pointer text-xs text-gray-400"
+                                >
+                                  {layout}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Quick Settings */}
+                          <div className="space-y-3">
+                            <div className="text-xs font-medium text-gray-400">Settings</div>
+                            <div className="space-y-2">
+                              {[
+                                "Theme",
+                                "Typography",
+                                "Transitions",
+                                "Background"
+                              ].map((setting) => (
+                                <div
+                                  key={setting}
+                                  className="px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors cursor-pointer flex items-center justify-between"
+                                >
+                                  <span className="text-xs text-gray-400">{setting}</span>
+                                  <Settings className="w-3.5 h-3.5 text-gray-600" />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </motion.div>
-
-            <div className="space-y-6">
-              {[
-                {
-                  title: "Smart Editor",
-                  description: "Drag-and-drop interface with real-time collaboration. Create slides with multiple columns, images, lists, and more.",
-                  gradient: "from-orange-500 to-pink-500"
-                },
-                {
-                  title: "Theme System",
-                  description: "Choose from beautiful themes with custom fonts, colors, and gradients. Every element automatically matches your brand.",
-                  gradient: "from-purple-500 to-blue-500"
-                },
-                {
-                  title: "Presentation Mode",
-                  description: "Present with confidence using our full-screen mode with keyboard navigation and smooth transitions.",
-                  gradient: "from-green-500 to-teal-500"
-                },
-                {
-                  title: "Auto-saving",
-                  description: "Never lose your work with automatic saving. Every change is saved in real-time.",
-                  gradient: "from-blue-500 to-indigo-500"
-                },
-                {
-                  title: "Easy Sharing",
-                  description: "Share your presentations with a simple link. Recipients can view without signing up.",
-                  gradient: "from-pink-500 to-rose-500"
-                },
-                {
-                  title: "Export Options",
-                  description: "Export your presentations to multiple formats including PowerPoint and PDF.",
-                  gradient: "from-yellow-500 to-orange-500"
-                }
-              ].map((feature, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="p-6 rounded-xl border border-border/50 backdrop-blur-sm relative overflow-hidden group"
-                >
-                  <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} opacity-5 group-hover:opacity-10 transition-opacity`} />
-                  <h3 className="text-2xl font-bold mb-3 text-white">{feature.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">{feature.description}</p>
+                  <div className="z-[0] absolute inset-0 bg-gradient-to-b from-transparent to-background/60" />
                 </motion.div>
-              ))}
+
+                {/* Feature Cards Container */}
+                <motion.div
+                  className="w-[41.67%] relative"
+                  style={{
+                    opacity: featuresOpacity,
+                    x: featuresX,
+                    position: 'absolute',
+                    right: 0,
+                    height: '80vh',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <motion.div
+                    className="absolute top-0 right-0 w-full space-y-6 p-6"
+                    style={{ y: featuresY }}
+                  >
+                    {/* Feature Cards with individual scroll animations */}
+                    {[
+                      {
+                        title: "Smart Editor",
+                        description: "Drag-and-drop interface with real-time collaboration. Create slides with multiple columns, images, lists, and more."
+                      },
+                      {
+                        title: "Theme System",
+                        description: "Choose from beautiful themes with custom fonts, colors, and gradients. Every element automatically matches your brand."
+                      },
+                      {
+                        title: "Presentation Mode",
+                        description: "Present with confidence using our full-screen mode with keyboard navigation and smooth transitions."
+                      },
+                      {
+                        title: "Auto-saving",
+                        description: "Never lose your work with automatic saving. Every change is saved in real-time."
+                      },
+                      {
+                        title: "Export Options",
+                        description: "Export your presentations to multiple formats including PowerPoint and PDF."
+                      },
+                      {
+                        title: "Real-time Collaboration",
+                        description: "Work together with your team in real-time. See changes instantly as they happen."
+                      }
+                    ].map((feature, index) => (
+                      <motion.div
+                        key={feature.title}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-20%" }}
+                        transition={{
+                          duration: 0.5,
+                          delay: 0.2 + (index * 0.1)
+                        }}
+                        className="p-6 rounded-xl border border-white/5 bg-black/20 backdrop-blur-sm"
+                      >
+                        <h3 className="text-2xl font-bold text-white mb-2">{feature.title}</h3>
+                        <p className="text-gray-400">{feature.description}</p>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </motion.div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 px-4 relative">
+      <section id="pricing" className="pt-12 px-4 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-background/50 to-background" />
         <div className="max-w-3xl mx-auto text-center relative z-10">
           <motion.div
@@ -520,15 +823,15 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-presentive to-purple-400 bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-presentive">
               Simple, transparent pricing
             </h2>
             <p className="mt-4 text-xl text-gray-400 max-w-xl mx-auto mb-12">
               One plan, all features included. No hidden fees or complicated tiers.
             </p>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -538,15 +841,15 @@ export default function Home() {
             <div className="absolute top-0 right-0 bg-primary/10 px-4 py-2 rounded-bl-lg text-sm font-medium">
               Most Popular
             </div>
-            
+
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#F55C7A] to-[#F6BC66]"></div>
-            
+
             <h3 className="text-3xl font-bold">Pro Plan</h3>
             <div className="mt-4 mb-6">
               <span className="text-5xl font-bold">$59</span>
               <span className="text-secondary-foreground ml-1">/month</span>
             </div>
-            
+
             <ul className="space-y-4 text-left max-w-md mx-auto mb-8">
               {[
                 "Unlimited presentations",
@@ -558,7 +861,7 @@ export default function Home() {
                 "Export to PowerPoint & PDF",
                 "Custom branding options"
               ].map((feature, i) => (
-                <motion.li 
+                <motion.li
                   key={i}
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -571,7 +874,7 @@ export default function Home() {
                 </motion.li>
               ))}
             </ul>
-            
+
             <Button size="lg" className="w-full text-lg py-6" asChild>
               <Link href="/signin">
                 Get Started Now
@@ -585,7 +888,7 @@ export default function Home() {
       {/* CTA Section */}
       <section id="cta" className="py-24 px-4 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-background/50 to-background" />
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -614,7 +917,7 @@ export default function Home() {
               <span className="text-gray-400">|</span>
               <span className="text-gray-400">Create stunning AI-powered presentations</span>
             </div>
-            
+
             <div className="flex space-x-6">
               {["Twitter", "GitHub", "Discord"].map(item => (
                 <Link href="#" key={item} className="text-gray-400 hover:text-white transition-colors">
@@ -623,7 +926,7 @@ export default function Home() {
               ))}
             </div>
           </div>
-          
+
           <div className="mt-8 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 text-sm">
               © {new Date().getFullYear()} Presentive. All rights reserved.
