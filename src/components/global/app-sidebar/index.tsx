@@ -14,6 +14,7 @@ import NavMain from './nav-main'
 import { data } from '@/lib/constants'
 import RecentOpen from './recent-open'
 import NavFooter from './nav-footer'
+import Logo from '../Logo'
 
 type Props = {
   recentProjects?: Project[],
@@ -30,16 +31,8 @@ function AppSidebar({ recentProjects, user, ...props }: Props) {
       <SidebarHeader className='pt-3 pl-3 pb-0'>
         <SidebarMenuButton size={'lg'} className='data-[state=open]:text-sidebar-accent-foreground flex items-center justify-center'>
           <div className='flex aspect-square items-center justify-center rounded-lg text-sidebar-primary-foreground'>
-            <Avatar className='size-6 rounded-full'>
-              <AvatarImage
-                src='/globe.svg'
-                alt='Presentive-logo'
-              />
-            </Avatar>
+            <Logo />
           </div>
-          <span className='truncate text-lg font-bold bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent'>
-            {" "}Presentive
-          </span>
         </SidebarMenuButton>
       </SidebarHeader>
 

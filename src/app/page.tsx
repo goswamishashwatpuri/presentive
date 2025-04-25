@@ -8,7 +8,6 @@ import {
   ArrowRight,
   Presentation,
   Sparkles,
-  Gauge,
   Zap,
   Check,
   Menu,
@@ -19,50 +18,13 @@ import {
   Palette,
   BarChart,
   Users,
-  Calendar,
-  Clock,
-  Link2,
   Settings
 } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
 import { MasterRecursiveComponent } from "@/app/(protected)/presentation/[presentationId]/_components/editor/master-recursive-component";
 import { ContentItem, ContentType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-// Simple mock for demo slide
-const demoSlide: ContentItem = {
-  id: uuidv4(),
-  type: "column" as ContentType,
-  name: "Column",
-  content: [
-    {
-      id: uuidv4(),
-      type: "title" as ContentType,
-      name: "Title",
-      content: "Create Amazing Presentations",
-      placeholder: "Title"
-    },
-    {
-      id: uuidv4(),
-      type: "heading2" as ContentType,
-      name: "Heading2",
-      content: "With Presentive's AI-Powered Platform",
-      placeholder: "Subtitle"
-    },
-    {
-      id: uuidv4(),
-      type: "bulletList" as ContentType,
-      name: "Bullet List",
-      content: [
-        "Generate beautiful slides in seconds",
-        "Customize with intuitive editor",
-        "Share with your team instantly",
-        "Choose from stunning templates"
-      ]
-    }
-  ],
-  className: "space-y-4 p-6"
-};
+import Logo from "@/components/global/Logo";
 
 // Demo slides data
 const demoSlides = [
@@ -253,7 +215,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <span className="text-white text-2xl font-bold">Presentive</span>
+              <Logo />
             </div>
 
             {/* Desktop Navigation */}
@@ -267,7 +229,7 @@ export default function Home() {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`text-sm font-medium transition-colors hover:text-orange-400 ${activeSection === item.id ? "text-orange-400" : "text-gray-400"
+                  className={`text-sm font-medium transition-colors hover:text-orange-400 ${activeSection === item.id ? "underline underline-offset-4 decoration-orange-400" : "text-gray-400"
                     }`}
                 >
                   {item.label}
@@ -319,8 +281,8 @@ export default function Home() {
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
                     className={`block w-full text-left px-4 py-2 text-sm font-medium rounded-lg ${activeSection === item.id
-                        ? "bg-orange-500/10 text-orange-400"
-                        : "text-gray-400 hover:text-white"
+                      ? "bg-orange-500/10 text-orange-400"
+                      : "text-gray-400 hover:text-white"
                       }`}
                   >
                     {item.label}
@@ -346,11 +308,25 @@ export default function Home() {
         </AnimatePresence>
       </header>
 
-      {/* Hero Section - Updated Buttons */}
+      {/* Hero Section */}
       <section id="home" className="flex flex-col items-center justify-center text-center px-4 pt-36 pb-24 md:pt-48 md:pb-32 relative overflow-hidden bg-black">
         <div className="absolute inset-0 bg-gradient-to-br from-black via-background to-background opacity-90" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05),transparent_50%)]" />
+        
+        {/* Glowing Orb */}
+        <div 
+          className="absolute w-[400px] h-[400px]"
+          style={{
+            background: 'radial-gradient(circle at center, rgba(251, 146, 60, 0.15) 0%, rgba(236, 72, 153, 0.15) 50%, transparent 70%)',
+            filter: 'blur(60px)',
+            top: '50%',
+            right: '5%',
+            transform: 'translate(0, -50%)',
+            mixBlendMode: 'screen'
+          }}
+        />
 
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05),transparent_50%)]" />
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -365,7 +341,7 @@ export default function Home() {
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-[85px] font-bold tracking-tight text-white leading-tight">
-            Create stunning<br />presentations with <span className="text-orange-400">AI</span>
+            Create stunning<br />presentations with <span className="text-presentive">AI</span>
           </h1>
           <p className="mt-6 text-xl text-gray-400 max-w-2xl mx-auto">
             Presentive helps you build professional, beautiful presentations in minutes,
@@ -426,19 +402,19 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                icon: <Brain className="h-12 w-12 text-presentive" />,
+                icon: <Brain className="h-12 w-12 text-orange-400" />,
                 title: "Generate",
                 subtitle: "AI-Powered Creation",
                 description: "Enter your topic or outline and let our AI create a professional presentation instantly"
               },
               {
-                icon: <Settings className="h-12 w-12 text-purple-400" />,
+                icon: <Settings className="h-12 w-12 text-orange-500" />,
                 title: "Customize",
                 subtitle: "Easy Editing",
                 description: "Fine-tune your slides with our intuitive editor and choose from beautiful themes"
               },
               {
-                icon: <Share2 className="h-12 w-12 text-pink-400" />,
+                icon: <Share2 className="h-12 w-12 text-orange-400" />,
                 title: "Share",
                 subtitle: "Instant Sharing",
                 description: "Share your presentation with anyone, anywhere, on any device"
@@ -577,7 +553,7 @@ export default function Home() {
               <div className="w-full flex items-start gap-8 relative">
                 {/* Demo Window */}
                 <motion.div
-                  style={{ 
+                  style={{
                     width: demoWidth,
                     height: '80vh'
                   }}

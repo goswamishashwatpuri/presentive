@@ -4,12 +4,18 @@ import { useSignIn } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
 
 export default function SignInPage() {
   const { signIn, isLoaded } = useSignIn();
   const [error, setError] = useState("");
+  const router = useRouter();
+  useEffect(() => {
+    return () => setError("")
+  }, [])
 
   const handleGoogleSignIn = async () => {
     if (!isLoaded) return;
@@ -30,7 +36,7 @@ export default function SignInPage() {
       {/* Animated background elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      
+
       <div className="flex min-h-screen flex-col items-center justify-center p-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -52,7 +58,7 @@ export default function SignInPage() {
                 <Sparkles size={18} className="text-presentive" />
                 <span>Welcome back</span>
               </div>
-              
+
               <div className="space-y-3">
                 <h1 className="text-[28px] font-bold tracking-tight">
                   Create stunning presentations with AI
@@ -67,6 +73,13 @@ export default function SignInPage() {
               {error && (
                 <p className="text-sm text-red-500 text-center">{error}</p>
               )}
+              {error === "Session already exists" &&
+                <Button
+                className="w-full"
+                onClick={() => router.push("/dashboard")}>
+                  Goto Dashboard
+                </Button>
+              }
 
               <Button
                 onClick={handleGoogleSignIn}
