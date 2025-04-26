@@ -166,7 +166,7 @@ export const updateSlides = async (projectId: string, slides: JsonValue) => {
     // console.log("Slides:", slides);
 
     // Validate input
-    if (!projectId || !slides ) {
+    if (!projectId || !slides) {
       return { status: 400, error: "Project ID and slides are required." };
     }
 
@@ -191,9 +191,9 @@ export const updateSlides = async (projectId: string, slides: JsonValue) => {
   }
 }
 
-export const updateTheme = async(projectId:string, theme: string) => {
-  try{// Validate input
-    if (!projectId || !theme ) {
+export const updateTheme = async (projectId: string, theme: string) => {
+  try {// Validate input
+    if (!projectId || !theme) {
       return { status: 400, error: "Project ID and slides are required." };
     }
 
@@ -203,7 +203,7 @@ export const updateTheme = async(projectId:string, theme: string) => {
         id: projectId,
       },
       data: {
-        themeName:theme,
+        themeName: theme,
       },
     });
 
@@ -213,7 +213,7 @@ export const updateTheme = async(projectId:string, theme: string) => {
 
     return { status: 200, data: updatedProject };
 
-  }catch(error){
+  } catch (error) {
     console.error("🔴 ERROR", error);
     return { status: 500, error: "Internal server error" };
   }
@@ -285,7 +285,7 @@ export const deleteAllProjects = async (projectIds: string[]) => {
     const deletedProjects = await client.project.deleteMany({
       where: {
         id: {
-          in: projectsToDelete.map((project) => project.id),
+          in: projectsToDelete.map((project: any) => project.id),
         },
       },
     });
