@@ -1,5 +1,5 @@
 "use client";
-import { FileUploaderRegular, } from "@uploadcare/react-uploader/next";
+import { FileUploaderRegular } from "@uploadcare/react-uploader/next";
 import "@uploadcare/react-uploader/core.css";
 
 type Props = {
