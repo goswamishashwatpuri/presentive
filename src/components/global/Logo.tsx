@@ -1,9 +1,7 @@
 import { ComponentIcon } from 'lucide-react'
 import React from 'react'
 
-type Props = {}
-
-function Logo({ }: Props) {
+function Logo() {
   return (
     <section className='flex items-center gap-2'>
       <div className='text-orange-400'>

@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback } from 'react'
 import { ContentItem } from '@/lib/types'
 import { motion } from 'framer-motion'
 import { Heading1, Heading2, Heading3, Heading4, Title } from '@/components/global/editor/headings'
@@ -33,8 +33,7 @@ const ContentRenderer = React.memo(({
   onContentChange,
   isPreview,
   isEditable,
-  slideId,
-  index
+  slideId
 }: Props) => {
 
   const handleChange = useCallback(

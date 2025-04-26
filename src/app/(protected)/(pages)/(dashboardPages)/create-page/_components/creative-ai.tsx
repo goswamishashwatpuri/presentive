@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { ChevronLeft, Loader2, RotateCcw } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import useCreativeAiStore from '@/store/useCreativeAiStore'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import CardList from './card-list'
 import usePromptStore from '@/store/usePromptStore'
 import RecentPrompts from './recent-prompts'
@@ -38,12 +37,7 @@ function CreativeAi({ onBack }: Props) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [selectedCard, setSelectedCard] = useState<string | null>(null)
   const [editText, setEditText] = useState('')
-  const [numberOfCards, setNumberOfCards] = useState(0)
   const { prompts, addPrompt } = usePromptStore()
-
-  useEffect(() => {
-    setNumberOfCards(outlines.length)
-  }, [outlines.length])
 
   function resetCards() {
     setEditingCard(null)
@@ -74,7 +68,6 @@ function CreativeAi({ onBack }: Props) {
         cardsData.push(newCard)
       })
       addMultipleOutlines(cardsData)
-      setNumberOfCards(cardsData.length)
       toast.success("Success", {
         description: `Outline generated successfully`
       })
@@ -120,6 +113,7 @@ function CreativeAi({ onBack }: Props) {
       resetOutlines()
 
     } catch (error) {
+      console.error(error)
       toast.error("Error", {
         description: "Unable to create project"
       })

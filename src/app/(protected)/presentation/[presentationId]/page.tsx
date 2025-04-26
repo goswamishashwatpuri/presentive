@@ -5,7 +5,7 @@ import { themes } from '@/lib/constants'
 import { useSlideStore } from '@/store/useSlideStore'
 import { Loader2 } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import { redirect, useParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { DndProvider } from 'react-dnd'
@@ -16,9 +16,7 @@ import Editor from './_components/editor/editor'
 import EditorSidebar from './_components/editor-sidebar/right-sidebar/index'
 import { Button } from '@/components/ui/button'
 
-type Props = {}
-
-function Page(props: Props) {
+function Page() {
   const { setTheme } = useTheme()
   const params = useParams()
   const { setSlides, setCurrentTheme, currentTheme, setProject, slides } = useSlideStore()

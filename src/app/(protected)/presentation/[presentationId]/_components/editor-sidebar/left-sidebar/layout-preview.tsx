@@ -5,9 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DraggableSlidePreview } from './draggable-slide-preview'
 
-type Props = {}
-
-function LayoutPreview({ }: Props) {
+function LayoutPreview() {
   const [loading, setLoading] = useState(true)
   const { getOrderedSlides, reorderSlides } = useSlideStore()
   const slides = getOrderedSlides()

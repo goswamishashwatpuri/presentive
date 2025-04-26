@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import AlertDialogBox from "../alert-dialog";
 import { motion } from "framer-motion";
-import { itemVariants, themes } from "@/lib/constants";
+import { itemVariants } from "@/lib/constants";
 import { timeAgo } from "@/lib/utils";
 import { deleteProject, recoverProject } from "@/actions/project";
 import { toast } from "sonner";
@@ -95,7 +95,6 @@ const ProjectCard = ({
   };
 
   const handleNavigation = () => {
-    console.log(slideData);
     setSlides(JSON.parse(JSON.stringify(slideData)));
     router.push(`/presentation/${projectId}`);
   };

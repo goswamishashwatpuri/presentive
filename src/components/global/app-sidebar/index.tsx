@@ -9,7 +9,6 @@ import {
   SidebarHeader,
   SidebarMenuButton
 } from '@/components/ui/sidebar'
-import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
 import NavMain from './nav-main'
 import { data } from '@/lib/constants'
 import RecentOpen from './recent-open'

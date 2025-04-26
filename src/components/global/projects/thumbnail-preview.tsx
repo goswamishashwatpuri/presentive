@@ -2,7 +2,7 @@ import { MasterRecursiveComponent } from '@/app/(protected)/presentation/[presen
 import { themes } from '@/lib/constants'
 import { Slide, Theme } from '@/lib/types'
 import { cn } from '@/lib/utils'
-import { Image } from 'lucide-react'
+import { ImageIcon } from 'lucide-react'
 import React from 'react'
 
 type Props = {
@@ -38,7 +38,7 @@ function ThumbnailPreview({ slide, themeName }: Props) {
         </div>
         :
         <div className='w-full h-full bg-gray-400 flex justify-center items-center'>
-          <Image className='w-6 h-6 text-gray-500' />
+          <ImageIcon className='w-6 h-6 text-gray-500' />
         </div>
       }
     </div>

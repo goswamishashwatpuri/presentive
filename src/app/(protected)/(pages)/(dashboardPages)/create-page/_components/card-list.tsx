@@ -26,7 +26,6 @@ function CardList({
   editingCard,
   selectedCard,
   editText,
-  addOutline,
   onEditChange,
   onCardSelect,
   onCardDoubleClick,
@@ -74,7 +73,7 @@ function CardList({
     setEditText('')
   }
 
-  function onDropHandler(e: React.DragEvent) {
+  function onDropHandler() {
     if (!draggedItem || dragOverIndex === null) return
 
     const updatedCards = [...outlines]
@@ -170,7 +169,7 @@ function CardList({
       }}
       onDrop={(e) => {
         e.preventDefault()
-        onDropHandler(e)
+        onDropHandler()
       }}
     >
       <AnimatePresence>

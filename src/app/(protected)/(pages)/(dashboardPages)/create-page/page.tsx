@@ -3,9 +3,8 @@ import CreatePageSkeleton from './_components/create-page-skeleton'
 import RenderPage from './_components/render-page'
 import { onAuthenticateUser } from '@/actions/user'
 import { redirect } from 'next/navigation'
-type Props = {}
 
-async function Page({ }: Props) {
+async function Page() {
   const checkUser = await onAuthenticateUser()
   if (!checkUser.user) {
     redirect('/sign-in')

@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
 import { MasterRecursiveComponent } from "@/app/(protected)/presentation/[presentationId]/_components/editor/master-recursive-component";
-import { ContentItem, ContentType } from "@/lib/types";
+import { ContentType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/global/Logo";
 
@@ -166,11 +166,6 @@ export default function Home() {
 
   const featuresY = useTransform(scrollYProgress,
     [0.4, 0.7],
-    ["0%", "-100%"]
-  );
-
-  const containerY = useTransform(scrollYProgress,
-    [0.8, 1],
     ["0%", "-100%"]
   );
 

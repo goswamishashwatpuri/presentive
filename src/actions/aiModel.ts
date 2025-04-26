@@ -1,7 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { GoogleGenAI } from '@google/genai';
-import mime from 'mime';
-import { createRandomString } from "@/lib/utils";
+
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey!);

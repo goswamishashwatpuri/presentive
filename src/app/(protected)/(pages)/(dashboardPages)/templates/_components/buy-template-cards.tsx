@@ -2,7 +2,6 @@
 import {
   containerVariants,
   itemVariants,
-  themes,
 } from "@/lib/constants";
 import { timeAgo } from "@/lib/utils";
 import { motion } from "framer-motion";

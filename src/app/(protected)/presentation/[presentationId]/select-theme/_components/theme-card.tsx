@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Theme } from '@/lib/types'
-import { AnimationControls, motion, useAnimation } from 'framer-motion'
+import { AnimationControls, motion } from 'framer-motion'
 import Image from 'next/image'
 import React from 'react'
 

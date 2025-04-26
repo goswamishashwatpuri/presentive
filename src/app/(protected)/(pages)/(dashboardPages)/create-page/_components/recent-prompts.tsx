@@ -7,9 +7,8 @@ import { Button } from '@/components/ui/button'
 import { timeAgo } from '@/lib/utils'
 import useCreativeAiStore from '@/store/useCreativeAiStore'
 import { toast } from 'sonner'
-type Props = {}
 
-function RecentPrompts({ }: Props) {
+function RecentPrompts() {
   const { prompts, setPage } = usePromptStore()
   const { addMultipleOutlines, setCurrentAiPrompt } = useCreativeAiStore()
 

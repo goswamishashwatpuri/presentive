@@ -5,9 +5,7 @@ import { FolderPlus, Plus } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
-type Props = {}
-
-function NotFound({}: Props) {
+function NotFound() {
   return (
     <motion.div 
       className='relative w-full flex flex-col items-center justify-center py-10 px-4'
@@ -35,7 +33,7 @@ function NotFound({}: Props) {
         </h1>
         
         <p className="text-gray-400 text-lg mb-8">
-          Start creating amazing presentations with Presentive's AI-powered platform
+          Start creating amazing presentations with Presentive&apos;s AI-powered platform
         </p>
 
         <Link 

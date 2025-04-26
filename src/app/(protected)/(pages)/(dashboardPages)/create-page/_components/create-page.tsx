@@ -13,7 +13,7 @@ type Props = {
 }
 
 function CreatePage({ onSelectOption }: Props) {
-  const { prompts, setPage } = usePromptStore()
+  const { setPage } = usePromptStore()
 
   useEffect(() => {
     setPage('create')

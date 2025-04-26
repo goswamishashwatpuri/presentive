@@ -29,8 +29,8 @@ export async function generateImageWithGeiminiTest(prompt: string) {
     throw new Error("Invalid response structure");
   }
 
-  let buffer = Buffer.from(inlineData.data, 'base64');
-  let fileName = createRandomString(10) + '.' + mime.getExtension(inlineData.mimeType);
+  const buffer = Buffer.from(inlineData.data, 'base64');
+  const fileName = createRandomString(10) + '.' + mime.getExtension(inlineData.mimeType);
   const res = await uploadFile(buffer, {
     publicKey: process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY!,
     fileName: fileName,

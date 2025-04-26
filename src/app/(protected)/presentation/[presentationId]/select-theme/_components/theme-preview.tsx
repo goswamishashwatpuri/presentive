@@ -10,9 +10,7 @@ import ThemeCard from './theme-card'
 import ThemePicker from './theme-picker'
 import { themes } from '@/lib/constants'
 
-type Props = {}
-
-function ThemePreview({ }: Props) {
+function ThemePreview() {
   const params = useParams()
   const router = useRouter()
   const controls = useAnimation()

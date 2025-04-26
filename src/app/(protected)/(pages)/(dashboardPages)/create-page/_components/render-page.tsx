@@ -8,10 +8,7 @@ import CreatePage from './create-page'
 import CreativeAi from './creative-ai'
 import CreateScratchPage from './create-scratch'
 
-
-type Props = {}
-
-function RenderPage({ }: Props) {
+function RenderPage() {
   const router = useRouter()
   const { page, setPage } = usePromptStore()
 

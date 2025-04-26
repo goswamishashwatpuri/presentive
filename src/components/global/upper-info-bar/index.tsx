@@ -1,7 +1,6 @@
 import React from 'react'
 import { User } from '@prisma/client'
 import { SidebarTrigger } from '@/components/ui/sidebar'
-import { Separator } from '@/components/ui/separator'
 import SearchBar from './upper-info-search-bar'
 import ThemeSwitcher from '@/components/global/mode-toggle/index'
 import { Button } from '@/components/ui/button'

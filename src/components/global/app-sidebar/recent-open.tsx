@@ -1,7 +1,7 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { SidebarMenuButton } from '@/components/ui/sidebar'
-import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar'
+import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar'
 import { useSlideStore } from '@/store/useSlideStore'
 import { Project } from '@prisma/client'
 import { JsonValue } from '@prisma/client/runtime/library'

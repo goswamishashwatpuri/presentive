@@ -23,6 +23,7 @@ function Navbar({ presentationId }: Props) {
     const getProject = async () => {
       const projectDetails = await getProjectById(presentationId)
       setProjectDetails(projectDetails?.data)
+      console.log(projectDetails)
     }
     getProject()
   }, [])

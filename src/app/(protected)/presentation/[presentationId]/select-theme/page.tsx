@@ -2,9 +2,7 @@
 import React from 'react'
 import ThemePreview from './_components/theme-preview'
 
-type Props = {}
-
-function SelectTheme({ }: Props) {
+function SelectTheme() {
 
   return (
     <ThemePreview />

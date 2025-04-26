@@ -28,8 +28,6 @@ function createHeading(displayName: string, defaultClassName: string) {
         }
       }, [isPreview])
       const previewClassName = isPreview ? 'text-xs' : ''
-
-      console.log(styles?.fontFamily)
       return (
         <textarea
           className={cn(`w-full bg-transparent ${defaultClassName} ${previewClassName} font-normal text-gray-900 placeholder: text-gray-300 focus: outline-none resize-none overflow-hidden leading-tight`,

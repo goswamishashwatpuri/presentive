@@ -1,11 +1,10 @@
 'use server'
 
 import { currentUser } from "@clerk/nextjs/server"
-import { generateImageWithGeimini, layoutGenerationSession, outlineGenerationSession } from "./aiModel"
+import { layoutGenerationSession, outlineGenerationSession } from "./aiModel"
 import { client } from "@/lib/prisma"
 import { v4 as uuidv4 } from 'uuid';
 import { ContentType, Slide, ContentItem } from "@/lib/types";
-import { uploadFile } from "@uploadcare/upload-client";
 import { generateImageWithGeiminiTest } from "./imageGenModel";
 
 export const generateCreativePrompt = async (prompt: string) => {
